@@ -1,0 +1,372 @@
+{
+  "name":"LifeDomainStudy",
+  "description":"A study about availability for different life domains",
+  "minimumStudyDurationPerPerson":7,
+  "maximumStudyDurationPerPerson":14,
+  "earliestBeginOfDataGathering":"2019-07-15T09:00:00Z",
+  "latestBeginOfDataGathering":"2019-07-30T12:00:00Z",
+  "userSetsStartDate":true,
+  "userSetsTimeRestrictions":true,
+  "defaultFromHour":8,
+  "defaultToHour":22,
+  "notifValidSec":300,
+  "promptingWithInterval": true,
+  "promptingIntervalSec":60,
+  "repeatingAPrompt":false,
+  "repeatDelaySeconds":20,
+  "enableInformedConsent":true,
+  "isPublic":true,
+  "isConfirmed":true,
+  "tasks":[
+    {
+      "taskName":"PreStudyQuestionnaire",
+      "personalData":true,
+      "trigger":"timeTrigger",
+      "steps":[
+        {
+          "stepName":"Demographics",
+          "stepItems":[
+            {
+              "variableName":"Gender",
+              "variableLabel":"Gender (male/female/diverse)",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"TextChoice",
+                "origin":"User",
+                "title":"What is your gender?",
+                "style":"singleChoice",
+                "textChoices":[
+                  {
+                    "text":"Male",
+                    "value":"0"
+                  },
+                  {
+                    "text":"Female",
+                    "value":"1"
+                  },
+                  {
+                    "text":"Diverse",
+                    "value":"2"
+                  },
+                  {
+                    "text":"Don't want to say",
+                    "value":"99999"
+                  }
+                ]
+              }
+            },
+            {
+              "variableName":"Age",
+              "variableLabel":"Age in years",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"Numeric",
+                "origin":"User",
+                "title":"How old are you?",
+                "style":"integer"
+              }
+            }
+          ]
+        },
+        {
+          "stepName":"Technology",
+          "stepItems":[
+            {
+                "variableName":"TechnicalAffinity",
+                "variableLabel":"Technical Affinity from 1 to 9",
+                "optional":false,
+                "confidential":false,
+                "dataFormat":{
+                  "type":"DiscreteScale",
+                  "origin":"User",
+                  "resultFormat":"ScaleResult",
+                  "title":"What is your technical affinity?",
+                  "vertical":false,
+                  "step":1,
+                  "minimum":1,
+                  "maximum":9,
+                  "defaultValue":5,
+                  "scaleItems":[
+                    {
+                      "label":"Very low",
+                      "value":"1"
+                    },
+                    {
+                      "label":"Very high",
+                      "value":"9"
+                    }
+                  ]
+                }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskName":"ESMQuestionnaire",
+      "personalData":false,
+      "trigger":"randomisedTrigger",
+      "steps":[
+        {
+          "stepName":"Situation",
+          "stepItems":[
+            {
+              "variableName":"domain",
+              "variableLabel":"Current domain",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"TextChoice",
+                "title":"What is your current domain?",
+                "style":"singleChoice",
+                "resultFormat":"OrdinalResult",
+                "origin":"User",
+                "textChoices":[
+                  {
+                    "valueLabel":"Work",
+                    "value":"0"
+                  },
+                  {
+                    "valueLabel":"Home",
+                    "value":"1"
+                  }
+                ]
+              }
+            },
+            {
+              "variableName":"social",
+              "variableLabel":"Social Company",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"Numeric",
+                "origin":"User",
+                "resultFormat":"ScaleResult",
+                "title":"How many persons are around you?",
+                "style":"integer"
+              }
+            }
+          ]
+        },
+        {
+          "stepName":"Stresslevel",
+          "stepItems":[
+            {
+              "variableName":"timeload",
+              "variableLabel":"Current time load",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"TextChoice",
+                "title":"Time Load",
+                "text":"Please choose the statement that best describes your time load.",
+                "style":"singleChoice",
+                "resultFormat":"OrdinalResult",
+                "origin":"User",
+                "textChoices":[
+                  {
+                    "valueLabel":"Often have spare time. Interruptions or overlap among activites occur infrequently or not at all.",
+                    "value":"0"
+                  },
+                  {
+                    "valueLabel":"Occasionally have spare time. Interruptions or overlap among acitivties occure frequently.",
+                    "value":"1"
+                  },
+                  {
+                    "valueLabel":"Almost never have spare time. Interruptions or overlap among activities are very frquent, or occur all the time.",
+                    "value":"2"
+                  }
+                ]
+              }
+            },
+            {
+              "variableName":"mentaleffortload",
+              "variableLabel":"Current mental effort load",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"TextChoice",
+                "origin":"User",
+                "resultFormat":"OrdinalResult",
+                "title":"Mental Effort Load",
+                "text":"Please choose the statement that best describes your mental effort load.",
+                "style":"singleChoice",
+                "textChoices":[
+                  {
+                    "valueLabel":"Very little conscious mental effort or concentration required. Activity is alomost automatic requiring little or no attention.",
+                    "value":"0"
+                  },
+                  {
+                    "valueLabel":"Moderate conscious mental effort or concentration required. Complexity of my activity is moderatly high due to uncertainty, unpredictabiilty, or unfamiliarity and considerable attention is required.",
+                    "value":"1"
+                  },
+                  {
+                    "valueLabel":"Extensive mental effort and concentration are necessary. Very comple activity requiring total attention.",
+                    "value":"2"
+                  }
+                ]
+              }
+            },
+            {
+              "variableName":"psychologicalstressload",
+              "variableLabel":"Current psychological stress load",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"TextChoice",
+                "origin":"User",
+                "resultFormat":"OrdinalResult",
+                "title":"Psychological Stress Load",
+                "text":"Please choose the statement that best describes your psychological stress load.",
+                "style":"singleChoice",
+                "textChoices":[
+                  {
+                    "valueLabel":"Little confusion, frustration or anxiety exists and can be easily accommodated.",
+                    "value":"0"
+                  },
+                  {
+                    "valueLabel":"Moderate stress due to confusion, frustration, or anxiety. Noticeably adds to workload. Significant compensatin is required to maintain adequate performance.",
+                    "value":"1"
+                  },
+                  {
+                    "valueLabel":"High to very intense stress due to confusion, frustration, or anxiety. High to extreme determination of self-control required.",
+                    "value":"2"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "stepName":"Task",
+          "stepItems":[
+            {
+              "variableName":"activity",
+              "variableLabel":"Current activity",
+              "optional":false,
+              "confidential":false,
+              "dataFormat":{
+                "type":"Text",
+                "origin":"User",
+                "resultFormat":"StringResult",
+                "title":"What is your current activity?",
+                "maximumLength":200
+              }
+            }
+          ]
+          }, {
+            "stepName":"Availability",
+            "stepItems":[
+              {
+                "variableName":"availability_current_domain",
+                "variableLabel":"Availability for the current domain",
+                "optional":false,
+                "confidential":false,
+                "dataFormat":{
+                  "type":"DiscreteScale",
+                  "origin":"User",
+                  "resultFormat":"ScaleResult",
+                  "title":"How available are you for your current domain?",
+                  "text":"(The two domains are Work and Home)",
+                  "vertical":false,
+                  "step":1,
+                  "minimum":1,
+                  "maximum":9,
+                  "defaultValue":5,
+                  "scaleItems":[
+                    {
+                      "label":"Not available at all",
+                      "value":"1"
+                    },
+                    {
+                      "label":"Very available",
+                      "value":"9"
+                    }
+                  ]
+                }
+              },
+              {
+                "variableName":"availability_other_domain",
+                "variableLabel":"Availability for the other domain",
+                "optional":false,
+                "confidential":false,
+                "dataFormat":{
+                  "type":"DiscreteScale",
+                  "origin":"User",
+                  "resultFormat":"OrdinalResult",
+                  "title":"How available are you for the other domain?",
+                  "text":"(The two domains are Work and Home)",
+                  "vertical":false,
+                  "step":1,
+                  "minimum":1,
+                  "maximum":9,
+                  "defaultValue":5,
+                  "scaleItems":[
+                    {
+                      "label":"Not available at all",
+                      "value":"1"
+                    },
+                    {
+                      "label":"Very available",
+                      "value":"9"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "triggers":[
+      {
+        "triggerName":"randomisedTrigger",
+        "minTimeBetweenSurveys":2,
+        "maxCountPerDay":10,
+        "triggeredBy":"",
+        "loop":{
+          "type":"timeRandomised",
+          "intervalMinutes":2,
+          "plusMinusMinutes":1
+        },
+        "constraints":[
+          {
+            "type":"sensor",
+            "sensorType":"Activity",
+            "sensorValue":"still"
+          }
+        ]
+      },
+      {
+        "triggerName":"timeTrigger",
+        "minTimeBetweenSurveys":2,
+        "maxCountPerDay":10,
+        "triggeredBy":"",
+        "loop":{
+          "type":"timeAtStart"
+        },
+        "constraints":[
+        ]
+      }
+    ],
+    "informedConsent":[
+      {
+        "type":"overview",
+        "value":"This study aims at investigating your availability for different life domain depending on your current domain and stress level."
+      },
+      {
+        "type":"studySurvey",
+        "value":"You will receive several surveys throughout the day. Please answer them as soon as you see the prompt and as freely and truly as possible."
+      },
+      {
+        "type":"dataUse",
+        "value":"The data may be used and processed for scientific publications but only in anonymous form so no conclusions to your person are possible."
+      },
+      {
+        "type":"withdrawing",
+        "value":"You can stop participation in the study at any time without any disadvantages."
+      }
+    ]
+  }

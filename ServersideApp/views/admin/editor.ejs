@@ -1,0 +1,244 @@
+
+ 
+<% include parts/header %>
+    <script src="../js/jsoneditor.js"></script>
+
+    <script>
+        //adapt header.ejs
+        //document.getElementById('editor_nav').className="active";
+    </script>
+
+    <script>
+        // Set the default CSS theme and icon library globally
+        JSONEditor.defaults.theme = 'bootstrap4';
+        JSONEditor.defaults.iconlib = 'fontawesome4';
+        
+    </script>
+        
+    <style>
+    /*some custom design*/
+    .form-control-label {
+        font-weight: 600;
+    }
+
+    label {
+        font-size: 20px;
+        color: #999999;
+    }
+    .form-control {
+        width: auto;
+    }
+
+    .form-text {
+        color: #999999;
+    }
+    </style>
+
+    <header class="page-header">
+        <div class="container-fluid">
+            <h2 class="no-margin-bottom">Survey Editor </h2>
+           
+        </div>
+    </header>
+    <section class="section_editor_controls no-padding-bottom">
+
+
+        <div class="container-fluid">
+
+
+            <div class="row bg-white has-shadow">
+                <div class="col-sm">
+                    <button class="btn btn-secondary json-editor-btn" id='enable_disable'>Disable/Enable Form</button>
+                    <button class="btn btn-secondary json-editor-btn" id='save'>Save Survey to JSON</button>
+                    <span id='valid_indicator'></span>
+
+                </div>
+            </div>
+        </div>
+
+        <section class="section_editor no-padding-bottom">
+
+
+
+            <div class="container-fluid">
+                <div class="row bg-white has-shadow" id='editor_holder'></div>
+
+            </div>
+
+
+            <script>
+                // Load with ejs
+                var starting_value = {"study": 
+                    <%- JSON.stringify(study) %>};           
+
+                // Initialize the editor
+                var editor = new JSONEditor(document.getElementById('editor_holder'), {
+                    // Enable fetching schemas via ajax
+                    ajax: true,
+
+                    // The schema for the editor
+                    schema: {
+                    
+                            //creates a study with identifier, duration, startdate and tasks
+                            title: "Editor",
+                            type: "object",
+                            id: "schema",
+                            properties: {
+                                  study: {
+                                      title: "study",
+                                      type: "object",
+                                      id: "study",
+                                      properties: {
+                                        identifier: {
+                                            type: "string",
+                                            description: "A short string that uniquely identifies the Study",
+                                            default: "Study1"  
+                                        },
+                                        maxStudyDurationInDays: {
+                                            type: "number"
+                                        },
+                                        userSetsStartDate: {
+                                            type: "boolean"
+                                        },
+                                        startDate: {
+                                            type: "string",
+                                            format: "date"
+                                        },
+                                      
+
+                                //creates tasks with identifier and steps
+                                tasks: {
+                                    type: "array",
+                                    title: "tasks",
+                                    format: "tabs",
+                                    items: {
+                                        title: "Task",
+                                        headerTemplate: "{{i}} - {{self.identifier}}",
+                                        oneOf: [{
+                                            $ref: "task.json",
+                                            title: "Task"
+                                        }]
+                                    }
+                                },
+                                
+                                //creates triggers (time, location)
+                                triggers: {
+                                title: "triggers",
+                                type: "array",
+                                format: "tabs",
+                                id: "triggers",
+                                
+                                items: {
+                                    title: "triggers",
+                                    headerTemplate: "{{i}} - {{self.identifier}}",
+                                            oneOf: [{
+                                                title: "timeTrigger",
+                                                $ref: "timeloop.json"
+                                            },
+                                            {
+                                                title: "locationTrigger",
+                                                $ref: "locationloop.json"
+                                            }]
+                                        }
+                                    },
+
+                                     
+                        
+                    }
+                                  }
+                    }
+                        
+                    },
+                    
+                    // some property setting
+
+                    startval: starting_value,
+
+                    // Disable additional properties
+                    no_additional_properties: true,
+
+                    expand_height: true,
+
+                    // Don't show json button
+                    disable_edit_json: true,
+                        
+                    // Don't show property button
+                    disable_properties: true,
+
+                    // Require all properties by default
+                    required_by_default: true
+                });
+
+
+
+                document.getElementById('save').addEventListener('click', function() {
+                    var xmlhttp = new XMLHttpRequest();
+                    var url = "/admin/saveJSON";
+                    var params = JSON.stringify(editor.getValue());
+                    xmlhttp.open("POST", url, true);
+                    //Send the proper header information along with the request
+                    xmlhttp.setRequestHeader("Content-type", "application/json");
+                    xmlhttp.onreadystatechange = function() { //Call a function when the state changes.
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
+                    }
+                    xmlhttp.send(params);
+                    alert("Saved to JSON!");
+                });
+
+                // Hook up the enable/disable button
+                document.getElementById('enable_disable').addEventListener('click', function() {
+                    // Enable form
+                    if (!editor.isEnabled()) {
+                        editor.enable();
+                    }
+                    // Disable form
+                    else {
+                        editor.disable();
+                    }
+                });
+
+                // Hook up the validation indicator to update its 
+                // status whenever the editor changes
+                editor.on('change', function() {
+                    // Get an array of errors from the validator
+                    var errors = editor.validate();
+
+                    var indicator = document.getElementById('valid_indicator');
+
+                    // Not valid
+                    if (errors.length) {
+                        indicator.style.backgroundColor = 'red';
+                        indicator.style.color = 'white';
+                        indicator.style.padding = '7px';
+                        indicator.textContent = "not valid";
+                        indicator.style.borderRadius = '5px';
+                        indicator.style.margin = '5px';
+
+
+                    }
+                    // Valid
+                    else {
+                        indicator.style.color = 'white';
+                        indicator.style.padding = '7px';
+                        indicator.style.backgroundColor = 'green';
+                        indicator.style.borderRadius = '5px';
+                        indicator.style.margin = '5px';
+                        indicator.textContent = "valid";
+
+                    }
+                });
+
+                //                    var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance 
+                //                    xmlhttp.open("POST", "/json-handler");
+                //                    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                //                    xmlhttp.send(JSON.stringify(editor.getValue()));
+            </script>
+
+
+
+
+
+        </section>
+
+
+        <% include parts/footer %>

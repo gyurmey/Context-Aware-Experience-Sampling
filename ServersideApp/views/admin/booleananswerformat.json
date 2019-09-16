@@ -1,0 +1,56 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "BooleanQuestionStep1"},
+
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["BooleanAnswerFormat"]
+
+
+     },
+
+    "yes": {
+        "type": "string",
+        "default": "yes",
+        "value": "yes",
+        "description":"The String to describe the Yes answer."
+    },
+    "no": {
+        "type": "string",
+        "default": "no",
+        "value": "no",
+        "description": "The String to describe the No answer."
+    },
+    "feedbackChartType": {
+        "type": "string",
+        "enum": ["None", "Bar", "Pie"],
+        "description": "The kind of chart which will be send as feedback to the user"
+    }
+  }
+}

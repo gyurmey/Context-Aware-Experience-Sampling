@@ -1,0 +1,47 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "ConfirmTextQuestionStep1"},
+      
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },  
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["ConfirmTextAnswerFormat"]
+        
+     
+     },
+    "originalItemIdentifier": {
+      "type": "string",
+      "description":"The identifier for the form item that the current item will be validated against."
+    },
+    "errorMessage": {
+        "type": "string",
+        "description":"The error message displayed if validation fails."
+      
+    }
+  }
+}

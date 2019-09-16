@@ -1,0 +1,12 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["time"]
+        },
+        "intervalMinutes": {
+            "type": "number"
+        }
+    }
+
+}

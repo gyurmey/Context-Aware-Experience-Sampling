@@ -1,0 +1,104 @@
+{
+    "properties": {
+          "identifier": {
+              "type": "string",
+              "description": "A short string that uniquely identifies the task within the survey.",
+              "default": "Task1"
+          },
+        "trigger": {
+            "type": "string",
+			"description": "Add the id of the trigger which describes how to schedulue the surveys"
+        },
+		"feedbackTrigger": {
+            "type": "string",
+			"description": "Add the id of the trigger which describes how to schedulue feedback. Input 'None' if task should have no feedback"
+        },
+        "steps": {
+
+                                            "type": "array",
+                                            "title": "steps",
+                                            "format": "tabs",
+                                            "items": {
+                                                "title": "Step",
+                                                "headerTemplate": "{{i}} - {{self.identifier}}",
+                                                "oneOf": [
+
+                                                {
+                                                    "$ref": "instructionstep.json",
+                                                    "title": "InstructionStep"
+                                                },
+                                                {
+                                                    "$ref": "imagecapturestep.json",
+                                                    "title": "ImageCaptureStep"
+                                                },
+                                                {
+                                                    "$ref": "videocapturestep.json",
+                                                    "title": "VideoCaptureStep"
+                                                },
+                                                {
+                                                    "$ref": "completionstep.json",
+                                                    "title": "CompletionStep"
+                                                },
+
+
+                                                {
+                                                    "$ref": "booleananswerformat.json",
+                                                    "title": "BooleanQuestionStep"},
+                                                {
+                                                    "$ref": "dateanswerformat.json",
+                                                    "title": "DateQuestionStep"},
+
+                                                {   "$ref": "heightanswerformat.json",
+                                                    "title": "HeightQuestionStep"},
+                                                {
+                                                    "$ref": "emailanswerformat.json",
+                                                    "title": "EmailQuestionStep"},
+
+                                                {   "$ref": "numericanswerformat.json",
+                                                    "title": "NumericQuestionStep"},
+
+
+                                                {   "$ref": "locationanswerformat.json",
+                                                    "title": "LocationQuestionStep"},
+
+                                                {   "$ref": "valuepickeranswerformat.json",
+                                                    "title": "PickerQuestionStep"},
+
+                                                {   "$ref": "textanswerformat.json",
+                                                    "title": "TextQuestionStep"},
+                                                {
+                                                    "$ref": "scaleanswerformat.json",
+                                                    "title": "ScaleQuestionStep"},
+
+                                                {   "$ref": "continiousscaleanswerformat.json",
+                                                    "title": "ContinuousScaleQuestionStep"},
+
+                                                {   "$ref": "timeofdayanswerformat.json",
+                                                    "title": "TimeOfDayQuestionStep"},
+                                                {
+                                                    "$ref": "imagechoiceanswerformat.json",
+                                                    "title": "ImageChoiceQuestionStep"},
+                                                {
+                                                    "$ref": "multiplevaluepickeranswerformat.json",
+                                                    "title": "MultiplePickerQuestionStep"},
+                                                {
+                                                    "$ref": "textchoiceanswerformat.json",
+                                                    "title": "TextChoiceQuestionStep"},
+                                                {
+                                                    "$ref": "timeintervalanswerformat.json",
+                                                    "title": "TimeIntervalQuestionStep"},
+                                                {
+                                                    "$ref": "textscaleanswerformat.json",
+                                                    "title": "TextScaleQuestionStep"},
+                                                {
+                                                    "$ref": "confirmtextanswerformat.json",
+                                                    "title": "ConfirmTextQuestionStep"}
+
+                                                ]
+                                            }
+                                        }
+
+
+
+        }
+    }

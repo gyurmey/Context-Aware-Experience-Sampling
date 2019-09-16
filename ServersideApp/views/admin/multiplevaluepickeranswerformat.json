@@ -1,0 +1,70 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "MultiplePickerQuestionStep1"},
+      
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },  
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["MultipleValuePickerAnswerFormat"]
+        
+     
+     },
+    "valuepickers": {
+      "type": "array",
+      "description":"An array of value pickers that represent the options to display in the picker.",
+      
+        "items": {
+          "anyOf": [
+         {
+                 "type": "array", 
+                 "title": "textchoice", 
+                 "items":{
+                    "anyOf":[
+                  {
+                      "title": "textchoice", 
+                      "properties":{
+                          "text":{
+                              "type": "string"}, 
+                          "value":{
+                              "type": "string"}
+                      }
+                  }
+                    ]
+                }
+         }
+       ]
+     
+      }
+    },
+    "separator": {
+      "type": "string",
+      "template": "undefined",
+      "description":"A string used to define the separator for the format of the string. Default = “ ”."
+    }
+}
+}

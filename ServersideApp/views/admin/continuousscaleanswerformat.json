@@ -1,0 +1,15 @@
+{
+    "$ref": "answerformat.json",
+    "properties": {
+        "_maximum": {
+            "type": "string"
+        },
+        "questionType":{
+            "type": "string",
+            "enum": [
+              "DateAnswerFormat"
+            ]
+          }
+        
+    }
+}

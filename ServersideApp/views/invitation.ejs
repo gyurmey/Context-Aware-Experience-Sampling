@@ -1,0 +1,84 @@
+
+<% include admin/parts/format2.ejs %>
+<% include admin/parts/link.ejs %>
+<script>
+</script>
+<div class="container">
+<body>
+   
+    <h2>Invite participants</h2>
+    <div class="alert alert-success" role="alert" id="alert_success" ></div>
+    <div class="alert alert-danger" role="alert" id="alert_error" ></div>
+    <form>
+        <div class="form-group">
+          <label for="email">Email address:</label>
+          <input type="email" class="form-control" id="email">
+        </div>
+        <button type="button"  class="btn btn-primary" id="btnAdd">Add</button>
+      </form>
+    <table class="table" id="tblEmail">
+        <thead>
+          <tr class="trFirstRow"  data-id="-1">
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id ="tblBody">
+            <% for(var i=0; i < rs.length; i++) { %>
+                <tr class="record-template">
+                    <td><%=rs[i]%></td>
+                    <td><button  class="btn btn-danger btnDelete" >Delete</button></td>
+                  </tr>
+                <% } %>
+        </tbody>
+      </table>
+      <button  class="btn btn-primary btnSave" >Save</button>
+</body>
+</div>
+<script>
+$(document).ready(function () {
+  $("#alert_error").hide();
+  $("#alert_success").hide();
+});
+$("body").delegate(".btnDelete", "click", function () {
+  var row = $(this).closest("tr");
+  row.remove();
+})
+    $("#btnAdd").click(function(){
+      if(!$("#email").val()){
+        alert("Email cannot be empty");
+        return;
+      }
+      var last_index = $("#tblEmail tr").length - 2;
+      i = last_index+1;
+      var content = "<td>"+ $("#email").val() + "</td>" + "<td><button class=\"btn btn-danger btnDelete\">"+"Delete" + "</button></td>";
+      var tr = "<tr class=\"record-template\" data-id=\"" + i + "\">" + content + "</tr>";
+        $("#tblEmail").append(tr);
+    });
+    $(".btnSave").click(function(){
+      var participants = new Array();
+      $(".record-template").each(function (data) {
+          
+          participants.push($(this).find("td").get(0).innerText);
+      });
+      var id = "<%=id%>"
+      $.ajax({
+        type: "PUT",
+        url: "/admin/invitation/"+ id,
+        crossDomain: true,
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({participants: participants}),
+        error: function(err){
+          $("#alert_success").hide();
+          $("#alert_error").show();
+          $("#alert_error").text(err.responseText);
+        },
+        success : function(rs){
+          $("#alert_error").hide();
+          $("#alert_success").text(rs);
+          $("#alert_success").show();
+        }
+      });
+    });
+    
+</script>

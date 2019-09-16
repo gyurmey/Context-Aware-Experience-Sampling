@@ -1,0 +1,55 @@
+{
+    "$ref": "step.json",
+    "title": "Instruction Step",
+    "type": "object",
+    "id": "instructionstep",
+    "properties": {
+            "identifier":{},
+            "type": {
+                "type": "string",
+                "enum": ["InstructionStep", "CompletionStep"],
+                "template": "InstructionStep"},
+            "title":{},
+            "text":{},
+            "optional":{},
+            "detailText": {
+              "type": "string",
+              "description": "Additional detailed explanation for the instruction.",
+              "default": "Explain the instruction..."  
+          },
+        
+            "footnote": {
+             "type": "string",
+             "description": "Additional text to display for the step in a localized string at the bottom of the view."},
+
+            "image": {
+                "type": "string",
+                "format": "file",
+                "title": "image",
+            
+                "media": {
+                    "binaryEncoding": "base64",
+                    "type": "image/png"
+                },  
+            "description": "An image that provides visual context for the instruction."
+          }, 
+
+            "auxiliaryImage": {
+                "type": "string",
+                "format": "file",
+                "title": "auxiliaryImage",
+            
+                "media": {
+                "binaryEncoding": "base64",
+                "type": "image/png"
+            },
+              "description": "An image that provides visual context for the instruction that will allow for showing a two-part composite image where the image is tinted and the auxiliaryImage is shown with light grey."
+          },
+
+            "iconImage": {
+                "type": "string",
+                "template": "undefined",
+                "description": "Optional icon image to show above the title and text."
+          }
+        }
+    }

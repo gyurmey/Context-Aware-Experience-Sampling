@@ -1,0 +1,11 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "promptOnEntering": {
+            "type": "boolean"
+        }
+    }
+
+}

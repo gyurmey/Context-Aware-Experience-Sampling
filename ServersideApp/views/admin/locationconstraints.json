@@ -1,0 +1,63 @@
+{
+    
+    "properties": {
+        "countMax": {
+            "type": "number"
+        },
+        "countMaxPerDay": {
+            "type": "number"},
+
+        "notInTime": {
+            "type": "object",
+            "properties": {
+        "timeFromHour": {
+            "type": "number"},
+        "timeToHour": {
+            "type": "number"}
+        }},
+
+        "location": {
+            "type": "object",
+            "properties": {
+            "name": {
+                "type": "string"},
+            "promptOnEntering": {
+                "type": "boolean"}
+            
+        }},
+
+        "notInLocation": {
+            "type": "object",
+            "properties": {
+            "name": {
+                "type": "string"},
+            "promptOnEntering": {
+                "type": "boolean"}
+            
+        }},
+        
+        "timeUserCanSet": {
+            "type": "array",
+            "format": "tabs",
+            "items": {
+                "oneOf": [
+                    {"title": "weekdays"},
+                    {"title": "weekends"},
+                    {"title": "all days"}
+                ]
+            }
+        },
+        "randomised": {
+            "type": "object",
+            "properties": {
+            "withinMinutes": {
+                "type": "number"},
+            "minDistanceMinutes": {
+                "type": "number"}
+            }
+
+    }
+
+}
+        
+    }

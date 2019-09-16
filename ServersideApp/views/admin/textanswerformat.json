@@ -1,0 +1,92 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "TextQuestionStep1"},
+
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["TextAnswerFormat"]
+
+
+     },
+    "validationRegularExpression": {
+      "type": "string",
+      "template": "undefined",
+      "description":"The regular expression used to validate user's output"
+    },
+    "invalidMessage": {
+      "type": "string",
+      "template": "Invalid Input!",
+      "description":"The text presented to the user when invalid input is received"
+    },
+  "maximumLength": {
+    "type": "number",
+    "description": "The maximum length of the text users can enter"
+  },
+  "multipleLines": {
+    "type": "boolean",
+    "default": "true",
+    "descrption":"A Boolean value indicating whether to expect more than one line of input"
+  },
+  "autocapitalizationType": {
+    "type": "string",
+    "template": "undefined",
+    "descrption": "The autocapitalization type that applies to the user’s input."
+  },
+
+  "autocorrectionType": {
+      "type": "string",
+      "template": "undefined",
+      "description":"The autocorrection type that applies to the user’s input."
+  },
+
+  "spellCheckingType": {
+      "type": "string",
+      "template": "undefined",
+      "description":"The spell checking type that applies to the user’s input."
+  },
+
+  "keyboardType": {
+      "type": "string",
+      "template": "undefined",
+      "description":"The keyboard type that applies to the user’s input."
+  },
+
+  "secureTextEntry": {
+      "type": "boolean",
+      "default": "false",
+      "description":"Identifies whether the text object should hide the text being entered."
+
+},
+"feedbackChartType": {
+	"type": "string",
+	"enum": ["None", "Text"],
+	"description": "The kind of chart which will be send as feedback to the user"
+}
+}
+}

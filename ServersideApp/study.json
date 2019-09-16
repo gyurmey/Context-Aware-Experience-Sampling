@@ -1,0 +1,165 @@
+{
+  "study": {
+    "identifier": "Feedback Study (Feedback Condition)",
+    "maxStudyDurationInDays": 7,
+    "userSetsStartDate": true,
+    "startDate": "2019-03-27",
+    "tasks": [
+      {
+        "identifier": "ESM-Questions",
+        "trigger": "weekend",
+        "feedbackTrigger": "feedbackLoop",
+        "steps": [
+          {
+            "identifier": "Instruction",
+            "type": "QuestionStep",
+            "title": "A new survey for you!",
+            "text": "Yeah!",
+            "optional": false,
+            "answerFormat": "TextChoiceAnswerFormat",
+            "style": "singleChoice",
+            "textChoices": [],
+            "feedbackChartType": "None"
+          },
+          {
+            "identifier": "Real Person Question",
+            "type": "InstructionStep",
+            "title": "How available are you right now for <b>electronic communication with a person?</b>",
+            "text": "(via WhatsApp, SMS, phone call, etc.)",
+            "optional": false,
+            "detailText": "Explain the instruction...",
+            "footnote": "",
+            "image": "",
+            "auxiliaryImage": "",
+            "iconImage": "undefined"
+          },
+          {
+            "identifier": "App Question",
+            "type": "InstructionStep",
+            "title": "How available are you right now for <b>handling a notification from an app</b>?",
+            "text": "(e.g., information on a software update, new content, or an advertisement)",
+            "optional": false,
+            "detailText": "Explain the instruction...",
+            "footnote": "",
+            "image": "",
+            "auxiliaryImage": "",
+            "iconImage": "undefined"
+          },
+          {
+            "identifier": "Task Free Question",
+            "type": "InstructionStep",
+            "title": "What was your exact task in the moment this survey interrupted you?",
+            "text": "",
+            "optional": false,
+            "detailText": "Explain the instruction...",
+            "footnote": "",
+            "image": "",
+            "auxiliaryImage": "",
+            "iconImage": "undefined"
+          },
+          {
+            "identifier": "Task Category Question",
+            "type": "InstructionStep",
+            "title": "This task was primarily related to...",
+            "text": "",
+            "optional": true,
+            "detailText": "Explain the instruction...",
+            "footnote": "",
+            "image": "",
+            "auxiliaryImage": "",
+            "iconImage": "undefined"
+          },
+          {
+            "identifier": "Cognitive Effort Question",
+            "type": "InstructionStep",
+            "title": "The cognitive effort involved in this task was...",
+            "text": "",
+            "optional": false,
+            "detailText": "Explain the instruction...",
+            "footnote": "",
+            "image": "",
+            "auxiliaryImage": "",
+            "iconImage": "undefined"
+          },
+          {
+            "identifier": "Social Situation Question",
+            "type": "InstructionStep",
+            "title": "I am currently…",
+            "text": "",
+            "optional": false,
+            "detailText": "Explain the instruction...",
+            "footnote": "",
+            "image": "",
+            "auxiliaryImage": "",
+            "iconImage": "undefined"
+          },
+          {
+            "identifier": "Completion",
+            "type": "QuestionStep",
+            "title": "That's it!",
+            "text": "Thanks!",
+            "optional": false,
+            "answerFormat": "ConfirmTextAnswerFormat",
+            "originalItemIdentifier": "",
+            "errorMessage": ""
+          }
+        ]
+      }
+    ],
+    "triggers": [
+      {
+        "identifier": "timeloop",
+        "loop": {
+          "type": "time",
+          "intervalMinutes": 90,
+          "intervalSeconds": 0
+        },
+        "constraints": [
+          {
+            "type": "time",
+            "fromHour": 8,
+            "toHour": 20,
+            "onDayType": "weekdays"
+          },
+          {
+            "type": "count",
+            "countMax": 56,
+            "countMaxPerDay": 8
+          }
+        ]
+      },
+      {
+        "identifier": "feedbackLoop",
+        "loop": {
+          "type": "time",
+          "intervalMinutes": 3,
+          "intervalSeconds": 0
+        },
+        "constraints": [
+          {
+            "type": "time",
+            "fromHour": 1,
+            "toHour": 23,
+            "onDayType": "allDays"
+          }
+        ]
+      },
+      {
+        "identifier": "weekend",
+        "loop": {
+          "type": "time",
+          "intervalMinutes": 0,
+          "intervalSeconds": 0
+        },
+        "constraints": [
+          {
+            "type": "time",
+            "fromHour": 8,
+            "toHour": 20,
+            "onDayType": "weekends"
+          }
+        ]
+      }
+    ]
+  }
+}

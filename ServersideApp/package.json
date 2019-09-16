@@ -1,0 +1,39 @@
+{
+  "name": "source",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "commons-validator-js": "^1.0.1201",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^2.6.1",
+    "express": "~4.16.0",
+    "express-ejs-layouts": "^2.5.0",
+    "express-recaptcha": "^5.0.0",
+    "express-session": "^1.16.1",
+    "express-swagger-generator": "^1.1.14",
+    "formidable": "^1.2.1",
+    "helmet": "^3.18.0",
+    "http-errors": "^1.6.3",
+    "md5": "^2.2.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.4",
+    "morgan": "~1.9.0",
+    "multer": "^1.4.1",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.3",
+    "qr-image": "^3.2.0",
+    "string-to-stream": "^1.1.1",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}

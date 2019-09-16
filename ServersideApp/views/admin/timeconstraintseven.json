@@ -1,0 +1,15 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["time"]
+        },
+        
+        "userCanSet": {
+            "type": "string",
+            "enum": ["weekdays", "allDays", "weekends"]
+
+        }
+    }
+
+}

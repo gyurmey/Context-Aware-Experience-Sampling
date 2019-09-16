@@ -1,0 +1,1505 @@
+
+<% include admin/parts/format.ejs %> 
+<script src="./js/jquery.timepicker.js"></script>
+<body>
+
+  <% include admin/parts/link.ejs %>
+
+  
+
+  <script>
+  $(document).ready(function () {
+      $(".taskAccordion,.stepAccordion,.stepItemAccordion,.triggerAccordion,.constraintAccordion,.consentAccordion,.scaleItemAccordion,.imageChoicesAccordion,.textChoiceAccordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+      });
+    $(".dropdown-item:first-child").click(function(){
+     var deleteId = $(this).val();
+     console.log(deleteId);
+     var x = confirm("Are you sure you want to delete this study?");
+     if(x) {
+     $.ajax({
+     type: "DELETE",
+     url: "/admin/study/"+deleteId,
+     success: function (data) {
+      $("#message").empty().append("<div class='alert alert-success alert-dismissible' role='alert'>The study has been deleted"+
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+      $("#item"+deleteId).remove();
+       },
+      error: function(data){
+        $("#message").empty().append("<div class='alert alert-danger alert-dismissible' role='alert'>"+data.responseText+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+      }});
+      }
+      });
+
+    $(".dropdown-item:nth-child(4)").click(function(){
+     var QRId = $(this).val();
+       $.ajax({
+       type: "GET",
+       url: "/admin/study/qr/"+QRId,
+       success: function (data) {
+       window.location = "/admin/study/qr/"+QRId;
+       $("#message").empty().append("<div class='alert alert-success alert-dismissible' role='alert'>The QR Code has been generated"+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+              },
+       error: function(data) {
+        $("#message").empty().append("<div class='alert alert-danger alert-dismissible' role='alert'>"+data.responseText+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+             }           
+           });
+      });
+
+     
+    $(".dropdown-item:nth-child(5)").click(function(){
+     var ConfirmId = $(this).val();
+       $.ajax({
+       type: "PUT",
+       url: "/admin/study/confirm/"+ConfirmId,
+       success: function (data) {
+       $("#message").empty().append("<div class='alert alert-success alert-dismissible' role='alert'>The study has been confirmed"+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+              },
+       error:  function(data) {
+        $("#message").empty().append("<div class='alert alert-danger alert-dismissible' role='alert'>"+data.responseText+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+                }           
+           });
+      }); 
+  // this function is  incomplete, json object must be customized accroding the one in addStudy.ejs 
+   $(".btn-success").click(function() {
+      var editId = $(this).attr('id');
+      var mainObject = new Object();
+      mainObject.name = $('#studyName'+editId+'').val();
+      mainObject.description = $('#studyDescription'+editId+'').val();
+     // mainObject.earliestBeginOfDataGathering = $('#earliestBeginOfDataGathering'+editId+'').val() + " 10:00:00";
+     // mainObject.latestBeginOfDataGathering = $('#latestBeginOfDataGathering'+editId+'').val() + " 10:00:00";
+      mainObject.maximumStudyDurationPerPerson = parseInt($('#maximumStudyDurationPerPerson'+editId+'').val());
+      mainObject.minimumStudyDurationPerPerson = parseInt($('#minimumStudyDurationPerPerson'+editId+'').val());
+      mainObject.defaultFromHour = parseInt($('#defaultFromHour'+editId+'').val());
+      mainObject.defaultToHour = parseInt($('#defaultToHour'+editId+'').val());
+      mainObject.notifValidSec = parseInt($('#notifValidSec'+editId+'').val());
+      mainObject.userSetsStartDate = eval($('#userSetsStartDate'+editId+' option:selected').val());
+      mainObject.userSetsTimeRestrictions = eval($('#userSetsTimeRestrictions'+editId+' option:selected').val());
+      mainObject.promptingWithInterval = $('#promptingWithInterval'+editId+' option:selected').val();
+      mainObject.repeatingAPrompt =  eval($('#repeatingAPrompt'+editId+' option:selected').val());
+      mainObject.enableInformedConsent =  eval($('#enableInformedConsent'+editId+' option:selected').val());
+      mainObject.promtingIntervalSec = parseInt($('#promptingIntervalSec'+editId+'').val());
+      mainObject.repeatDelaySeconds = parseInt($('#repeatDelaySeconds'+editId+'').val());
+      mainObject.isPublic =  eval($('#isPublic'+editId+' option:selected').val());
+      mainObject.isConfirmed =  eval($('#userSetsStartDate'+editId+' option:selected').val());
+      consentArray = [];
+      var consentCount = $('#consentAccordion'+editId+'').children().length;
+      if (consentCount != 0) {
+        consentCount = consentCount / 2 + 1;
+        for (var con = 1; con < consentCount; con++) {
+          var conObject = new Object();
+          conObject.type = $('#consentType' + con + ' option:selected').val();
+          conObject.value = $('#valueConsent' + con).val();
+          consentArray[con - 1] = conObject;
+        }
+      }
+      mainObject.informedConsent = consentArray;
+   //taskArray and TriggerArray are missing must be done according to the one in addStudy.ejs
+       var taskArray = [];
+       var triggerArray = [];
+       
+       $.ajax({
+         type: "PUT",
+         url: "/admin/study/"+editId,
+         crossDomain: true,
+         contentType: "application/json; charset=utf-8",
+         data: JSON.stringify(mainObject),
+         success: function (data) {
+          $("#message").empty().append("<div class='alert alert-success alert-dismissible' role='alert'>The study has been updated"+
+          "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+        },
+         error: function(data) {
+           $("#message").empty().append("<div class='alert alert-danger alert-dismissible' role='alert'>"+data.responseText+
+          "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+         }
+       })
+   });
+  
+   $(".latestBeginOfDataGathering, .earliestBeginOfDataGathering, .defaultdate, .minimumdate, .maximumdate").datepicker({
+             "dateFormat": "yy-mm-dd"  
+         });  
+
+  $(document).on("click", ".addTask", function(){
+    var taskCount =$(this).parent().siblings('.taskAccordion').children('h3').last().attr("value");
+    if (taskCount == undefined) {
+      taskCount = 1;
+      }
+      else {
+        taskCount++;
+      }
+    $(this).parent().siblings('.taskAccordion').append(
+                        "<h3 value='"+taskCount+"' class='taskCount'> Task "+ taskCount +
+                        "<span class='glyphicon glyphicon-trash' style='"+
+                        "right: 1%;" +
+                        "position: absolute;" +
+                        "top: 25%;'></span></h3><div>"+     
+                        "<label for='taskName'>Name</label></br>"+
+                        "<input type='text' class='form-control' id='taskName"+taskCount+"'>"+  
+                        "<label for='personalData'>Contains Personal data </label></br>"+ 
+                        "<select class='form-control' id='personalData"+taskCount+"'>"+
+                             "<option selected>true</option>"+
+                             "<option>false</option>"+
+                             "</br>"+
+                       "</select>"+
+                       "<label for='taskTrigger'>Trigger</label></br>"+
+                       "<input type='text' class='form-control' id='taskTrigger"+taskCount+"'>"+ 
+                        "<p><button class='btn btn-outline-primary addStep' type='button' id='addStep'>Add Step </button>"+
+                       "<button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>"+
+                       "<div class='stepAccordion'>"+ 
+                       "</div>"+
+                       "</div>");
+    $(this).parent().siblings('.taskAccordion').accordion().accordion("refresh");
+    $(this).parent().siblings('.taskAccordion').children('h3').last().click();
+    $(this).parent().siblings('.taskAccordion').children('.ui-accordion-content').last().find('.addStep').click();                   
+    });
+
+    $(document).on("click", ".addStep", function(){
+    var stepCount =$(this).parent().siblings('.stepAccordion').children('h3').last().attr("value");
+    if (stepCount == undefined) {
+       stepCount = 1;
+      }
+      else {
+        stepCount++;
+      }
+     $(this).parent().siblings('.stepAccordion').append(
+                   "<h3 value='"+stepCount+"'class='stepCount'>Step "+stepCount+
+                   "<span class='glyphicon glyphicon-trash' style='" +
+                   "right: 1%;" +
+                   "position: absolute;" +
+                   "top: 25%;" +
+                   "'></span></h3>"+
+                   "<div>"+
+                   "<label for='stepIdentifier'> Name </label><br>"+
+                   "<input type='text' class='form-control' id='stepIdentifier'><br>"+
+                   "<p><button class='btn btn-outline-primary addStepItem' type='button' id='addStepItem'>Add StepItem</button>"+
+                    "<button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>"+    
+                   "<div class='stepItemAccordion'>"+
+                   "</div>"+
+                   "</div>");  
+     $(this).parent().siblings('.stepAccordion').accordion({
+         collapsible: true,
+         heightStyle: "content",
+       });
+    $(this).parent().siblings('.stepAccordion').children('div').children('.stepItemAccordion').accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+       }); 
+    $(this).parent().siblings('.stepAccordion').accordion().accordion("refresh");   
+    $(this).parent().siblings('.stepAccordion').children('div').children('.stepItemAccordion').accordion().accordion("refresh");   
+    $(this).parent().siblings('.stepAccordion').children('h3').last().click();                       
+    $(this).parent().siblings('.stepAccordion').children('.ui-accordion-content').last().find('.addStepItem').click();                   
+   
+  });
+
+    $(document).on("click", ".addStepItem", function(){
+      var stepItemCount = $(this).parent().siblings('.stepItemAccordion').children('h3').last().attr("value");
+      if (stepItemCount == undefined) {
+        stepItemCount = 1;
+      }
+      else {
+        stepItemCount++;
+      }
+      $(this).parent().siblings('.stepItemAccordion').append(
+        "<h3 value='"+stepItemCount+"' class='stepCount'>Step Item "+stepItemCount+"<span class='glyphicon glyphicon-trash' style='"+
+                        "right: 1%;"+
+                        "position: absolute;"+
+                        "top: 25%;"+
+                    "'></span></h3>"+
+                  "<div>"+  
+                  "<label for='variableName'>Variable Name</label></br>"+
+                  "<input type='text' class='form-control' id='variableName'>"+ 
+                  "<label for='variableLabel'>Variable Label</label></br>"+
+                  "<input type='text' class='form-control' id='variableLabel'>"+ 
+                  "<label for='optional'>Optional</label></br>"+
+                  "<select class='form-control' id='optional'>"+
+                        "<option selected>true</option>"+
+                        "<option>false</option>"+
+                        "</br>"+
+                   "</select>"+         
+                   "<label for='confidential'>Confidential</label></br>"+
+                   "<select class='form-control' id='confidential'>"+
+                      "<option selected>true</option>"+
+                      "<option>false</option>"+
+                       "</br>"+
+                 "</select>"+ 
+                 "<label for='confidential'>Data Format</label></br>"+
+                 "<select class='form-control dataFormat'>"+
+                    "<option selected>Instruction</option>"+
+                    "<option>Image</option>"+
+                    "<option>Video</option>"+
+                    "<option>Audio</option>"+
+                    "<option>Date</option>"+
+                    "<option>Email</option>"+
+                    "<option>Numeric</option>"+
+                    "<option>Location</option>"+
+                    "<option>Text</option>"+
+                    "<option>Scale</option>"+
+                    "<option>ContinuousScale</option>"+
+                    "<option>TimeOfDay</option>"+
+                    "<option>ImageChoice</option>"+
+                    "<option>TextChoice</option>"+
+                    "<option>Activity</option>"+
+                    "<option>Light</option>"+
+                    "<option>Screen</option>"+
+                    "<option>Accelerometer</option>"+
+                    "<option>Temperature</option>"+
+                    "<option>PhoneCall</option>"+
+                    "<option>Proximity</option>"+
+                    "<option>Battery</option>"+
+                    "<option>Calendar</option>"+
+                    "<option>Notification</option>"+
+                    "<option>Humidity</option>"+
+                    "<option>Microphone</option>"+
+                    "</select>"+
+                    "<div class='dataType'>"+
+                    "<label for='stepItemTitle'>Title</label></br>"+
+                    "<input type='text' class='form-control' id='stepItemTitle'>"+ 
+                    "<label for='stepItemText'>Text</label></br>"+
+                    "<input type='text' class='form-control' id='stepItemText'>"+ 
+                    "<label for='detailText'>Detail Text</label></br>"+
+                    "<input type='text' class='form-control' id='detailText'>"+ 
+                    "<label for='image'>Image</label></br>"+
+                    "<input type='file' class='form-control' id='image'>"+ 
+                    "</div>"+ 
+                    "</div>");
+   $(this).parent().siblings('.stepItemAccordion').accordion().accordion("refresh"); 
+   $(this).parent().siblings('.stepItemAccordion').children('h3').last().click(); 
+    });
+
+ $(document).on("click", ".addTrigger", function(){
+    var triggerCount =$(this).parent().siblings('.triggerAccordion').children('h3').last().attr("value");
+    if (triggerCount == undefined) {
+      triggerCount = 1;
+      }
+      else {
+        triggerCount++;
+      }
+      $(this).parent().siblings('.triggerAccordion').append(
+                    "<h3 value='"+triggerCount+"' class='triggerCount'>Trigger "+triggerCount+
+                    "<span class='glyphicon glyphicon-trash' style='" +
+                    "right: 1%;" +
+                    "position: absolute;" +
+                    "top: 25%;" +
+                    "'></span></h3>"+     
+                    "<div>"+    
+                    "<label>Trigger Name </label></br>"+
+                    "<input type='text' class='form-control triggerName'></br>"+                                  
+                    '<label>Minimum Time Between Surveys (Minutes)</label></br>' +
+                    '<input type="number" class="form-control" id="triggerMinTime1"></br>' +
+                    '<label>Max Count per Day</label></br>' +
+                    '<input type="number" class="form-control" id="triggerMaxCount1"></br>' +
+                    '<label>Triggered By (Trigger Name)</label></br>' +
+                    '<input type="text" class="form-control" id="triggerTriggeredBy1"></br>' +
+                    '<label>Loop</label></br>' +
+                    '<select class="form-control triggerLoop">' +
+                    '<option selected>Activity Loop</option>' +
+                    '<option>Light Loop</option>'+
+                    '<option>Screen Loop</option>'+
+                    '<option>Location Loop</option>' +
+                    '<option>Accelerometer Loop</option>' +
+                    '<option>Temperature Loop</option>' +
+                    '<option>PhoneCall Loop</option>' +
+                    '<option>Proximity Loop</option>' +
+                    '<option>Battery Loop</option>' +
+                    '<option>Humidity Loop</option>'+
+                    '<option>Microphone Loop</option>'+
+                    '<option>SpecialCalendarEvent Loop</option>'+
+                    '<option>TimeInterval Loop</option>'+
+                    '<option>TimeRandomized Loop</option>'+
+                    '<option>TimeAtEnd Loop</option>'+
+                    '<option>TimeAtStart Loop</option>'+
+                    '<option>TimeAtDate Loop</option>'+
+                    '<option>TimeDaily Loop</option>'+
+                    '<option>CalendarEvent Loop</option>'+
+                    '<option>NotificationApp Loop</option>'+
+                    '<option>NotificationCategory Loop</option>'+
+                    '</select></br>' +
+                    '<div class="loopFields">' +
+                    '<label>Sensor Type</label></br><input type="text" class="form-control loopSensorType"></br>' +
+                     '<label>Sensor Value</label></br> <select class="form-control loopSensorValue"><option>onBicycle</option><option>onFoot</option><option>running</option><option>still</option><option>inVehicle</option><option>walking</option></select>'+
+                    '<label>PromptOn</label></br><input type="text" class="form-control loopPromptOn"></br>' +
+                   '</div>' +
+                   "<p><button class='btn btn-outline-primary addConstraint' type='button' id='addConstraint0'>Add Constraint</button>"+
+                   "<button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>"+
+                   "<div class='constraintAccordion'>"+ 
+                      "</div>"+
+                      "</div>");
+    
+   $(this).parent().siblings('.triggerAccordion').accordion().accordion("refresh"); 
+   $(this).parent().siblings('.triggerAccordion').children('h3').last().click(); 
+   $(this).parent().siblings('.triggerAccordion').children('.ui-accordion-content').last().find('.addConstraint').click();                
+    });
+
+    $(document).on("click", ".addConstraint", function(){
+    var constraintCount = $(this).parent().siblings('.constraintAccordion').children('h3').last().attr("value");
+    if (constraintCount == undefined) {
+        constraintCount = 1;
+      }
+      else {
+        constraintCount++;
+      }
+     $(this).parent().siblings('.constraintAccordion').append(   
+                    "<h3 value='"+constraintCount+"' class='constraintCount'> Constraint "+constraintCount+
+                    "<span class='glyphicon glyphicon-trash' style='" +
+                    "right: 1%;" +
+                    "position: absolute;" +
+                    "top: 25%;" +
+                    "'></span></h3>"+
+                    "<div>"+
+                      '<label for="constraintType">Constraint</label></br>' +
+                      '<select class="form-control constraint">' +
+                      '<option selected>Activity Constraint</option>' +
+                      '<option>Light Constraint</option>'+
+                      '<option>Screen Constraint</option>'+
+                      '<option>Location Constraint</option>' +
+                      '<option>Accelerometer Constraint</option>' +
+                      '<option>Temperature Constraint</option>' +
+                      '<option>PhoneCall Constraint</option>' +
+                      '<option>Proximity Constraint</option>' +
+                      '<option>Battery Constraint</option>' +
+                      '<option>Humidity Constraint</option>'+
+                      '<option>NotificationApp Constraint</option>'+
+                      '<option>LocalTime Constraint</option>'+
+                      '<option>Microphone Constraint</option>'+
+                      '<option>CalendarEvent Constraint</option>'+
+                      '<option>SpecialCalendarEvent Constraint</option>'+
+                      '<option>NotificationCategory Constraint</option>'+
+                      '</select></br>' +
+                      '<div class="constraintFields">' +
+                      '<label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType"></br>' +
+                      '<label>Sensor Value</label></br> <select class="form-control constraintSensorValue">'+
+                      '<option>onBicycle</option><option>onFoot</option><option>running</option><option>still</option><option>inVehicle</option><option>walking</option></select>'+
+                     '</div>'+
+                    "</div>");  
+    $(this).siblings('.constraintAccordion').accordion({
+        collapsible: true
+      });
+    $(this).parent().siblings('.constraintAccordion').accordion().accordion("refresh");   
+    $(this).parent().siblings('.constraintAccordion').children('h3').last().click();                       
+    });
+
+    $(document).on('click', '.glyphicon-trash', function () {
+      $(this).parents('h3').next('div').remove();
+      $(this).parents('h3').remove();
+    });
+
+  $(document).on('click', '.deleteData', function () {
+      $(this).parents('p').next('div').children().remove();
+    });
+
+    $("#export").click(function() {
+       $.ajax({
+       type: "GET",
+       url: "/admin/study/export",
+       success: function (data) {
+       window.location = "/admin/study/export";
+       $("#message").empty().append("<div class='alert alert-success alert-dismissible' role='alert'>The studies have been exported"+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+              },
+       error:  function(data) {
+        $("#message").empty().append("<div class='alert alert-danger alert-dismissible' role='alert'>"+data.responseText+
+         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+                }           
+           });
+    });
+    
+$('.defaultFromHour, .defaultToHour').timepicker();
+$(document).on("click", ".addConsent", function(){
+  var consentCount = $(this).parent().siblings('.consentAccordion').children('h3').last().attr("value");
+  if (consentCount == undefined) {
+     consentCount = 1;
+      }
+      else {
+        consentCount++;
+      }
+  $(this).parent().siblings('.consentAccordion').append("<h3 value='"+consentCount+"'> Informed Consent "+consentCount+"<span class='glyphicon glyphicon-trash' style='"+
+                       "right: 1%;"+
+                       "position: absolute;"+
+                       "top: 25%;"+
+                    "'></span></h3>"+
+                  "<div>"+
+                  "<label for='confidential'>Consent Type</label></br>"+
+                  "<select class='form-control data-target' id='consentType"+consentCount+"'>"+
+                      "<option value='overview'>Overview</option>"+
+                      "<option value='dataGathering'>Data Gathering</option>"+
+                      "<option value='privacy'>Privacy</option>"+
+                      "<option value='dataUse'>Data Use</option>"+
+                      "<option value='timeCommitment'>Time Commitment</option>"+
+                      "<option value='studySurvey'>Study Survey</option>"+
+                      "<option value='studyTasks'>Study Tasks</option>"+
+                      "<option value='withdrawing'>Withdrawing</option>"+
+                    "</select>"+
+                   "<label for='valueConsent'>Value </label>"+
+                   "<input type='text' class='form-control' id='valueConsent"+consentCount+"'>"+
+                   "</div>" );
+      $(this).parent().siblings('.consentAccordion').accordion().accordion('refresh');
+               
+});
+$(document).on('change', '.repeatingAPrompt', function(){
+ var value =$('.repeatingAPrompt').val();
+ if (value == 'false') {
+  $(this).siblings(".repeatDelaySeconds").prop('disabled', true); 
+ } else{
+  $(this).siblings(".repeatDelaySeconds").prop('disabled', false); 
+ }
+});
+$(document).on('change', '.promptingWithInterval', function(){
+ var value =$(this).val();
+ if (value == 'false') {
+  $(this).siblings(".promptingIntervalSec").prop('disabled', true); 
+ } else{
+  $(this).siblings(".promptingIntervalSec").prop('disabled', false); 
+ }
+});
+
+$(document).on('change', '.enableInformedConsent', function(){
+ var value =$(this).val();
+ if (value == "false"){
+  $(this).siblings('p').children('.addConsent, .deleteData').prop('disabled', true);
+  $(this).siblings('.consentAccordion').children().remove();
+ } else {
+  $(this).siblings('p').children('.addConsent, .deleteData').prop('disabled', false);
+     }
+   });    
+
+   $(document).on('change', '.triggerLoop', function () {
+      var selected = $(this).find('option:selected').text();
+      var type = selected.split(" ").shift();
+      var sensorType = '<label>Sensor Type</label></br><input type="text" class="form-control loopSensorType" value="type'+type+'"></br>';
+      var sensorValue = '<label>Sensor Value</label></br><input type="text" class="form-control loopSensorValue"></br>';
+       function setSensorValue(option){
+       return '<label>Sensor Value</label></br> <select class="form-control loopSensorValue">'+option+'</select>';
+      };
+      var promptOn = '<label>PromptOn</label></br><select class="form-control loopPromptOn"><option>entering </option><option>leaving</option></br></select>';
+      var sensingIntervalSec = '<label>Sensing Interval (Seconds)</label></br><input type="number" class="form-control loopSensingSec"></br>';
+      var thresholdHigh = '<label>Threshold High (°C)</label></br><input type="number" class="form-control loopThresholdHigh"></br>';
+      var thresholdLow = '<label>Threshold Low (°C)</label></br><input type="number" class="form-control loopThresholdLow"></br>';
+      var distanceThreshold = '<label>Distance Threshold (Cm)</label></br><input type="number" class="form-control loopDistanceThreshold"></br>';
+      var sensorAttribute = '<label>Sensor Attribute</label></br><input type="text" class="form-control loopSensorAttribute"></br>';
+      var intervalMinutes = '<label>Interval in Minutes</label></br><input type="number" class="form-control loopIntervalMinutes"></br>';
+      var plusMinusMInutes = '<label>Plus Minus Minutes</label></br><input type="number" class="form-control loopPlusMinusMinutes"></br>';
+      var date = '<label>Date</label></br><input type="text" class="form-control loopDate"/></br>';
+      var required = '<label>Required</label></br>' +
+        '<select class="form-control loopRequired">' +
+        '<option selected>true</option>' +
+        '<option>false</option>' +
+        '</select></br>';
+      var hour = '<label>Hour</label></br><input type="number" class="form-control loopHour"></br>';
+      var minute = '<label>Minute</label></br><input type="number" class="form-control loopMinute"></br>';
+
+
+      $(this).siblings('.loopFields').empty();
+
+     
+      if (selected == 'Light Loop') {
+        $(this).siblings('.loopFields').append(sensorType +setSensorValue('<option>bright</option><option>dark</option>') +promptOn);
+      }
+      if (selected == 'Screen Loop') {
+        $(this).siblings('.loopFields').append(sensorType +setSensorValue('<option>on</option><option>off</option>') +promptOn); 
+      }
+      if (selected == 'PhoneCall Loop'){
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>calling</option><option>notCalling</option>') + promptOn);
+      }
+      if (selected == 'Activity Loop'){
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>onBicycle</option><option>onFoot</option><option>running</option><option>still</option><option>inVehicle</option><option>walking</option>') + promptOn);
+         }
+      if (selected == 'Accelerometer Loop') {
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>upFlat</option><option>downFlat</option><option>unknown</option>') + promptOn + sensingIntervalSec);
+      }
+      if (selected == 'SpecialCalendarEvent Loop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorValue+ promptOn + sensingIntervalSec);
+      }
+      if (selected == 'Battery Loop') {
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>low</option><option>full</option><option>charging</option><option>ok</option>') + promptOn + sensingIntervalSec);
+      }
+      if (selected == 'Microphone Loop') {
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>humanVoice</option><option>noisy</option><option>silent</option>') + promptOn + sensingIntervalSec);
+      }
+      if (selected == 'Temperature Loop' || selected == 'Humidity Loop') {
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>high</option><option>low</option><option>normal</option>') + promptOn + sensingIntervalSec + thresholdHigh + thresholdLow);
+      }
+      if (selected == 'Proximity Loop') {
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>phoneIsCloseToFace</option><option>phoneIsAwayFromFace</option>') + promptOn + sensingIntervalSec + distanceThreshold);
+      }
+      if (selected == 'TimeInterval Loop') {
+        $(this).siblings('.loopFields').append(intervalMinutes);
+      }
+      if (selected == 'TimeRandomized Loop') {
+        $(this).siblings('.loopFields').append(intervalMinutes + plusMinusMInutes);
+      }
+      if (selected == 'TimeAtEnd Loop' || selected == 'TimeAtStart Loop') {
+      }
+      if (selected == 'TimeAtDate Loop') {
+        $(this).siblings('.loopFields').append(date + required);
+      }
+      if (selected == 'TimeDaily Loop') {
+        $(this).siblings('.loopFields').append(hour + minute + required);
+      }
+      if (selected == 'CalendarEvent Loop') {
+        $(this).siblings('.loopFields').append(sensorType + setSensorValue('<option>event</option><option>noEvent</option>') + sensingIntervalSec + promptOn);
+      }
+      if (selected == 'NotificationApp Loop'|| selected == 'NotificationCategory Loop' || selected == 'Location Loop'){
+      $(this).siblings('.loopFields').append(sensorType + sensorValue + promptOn);
+      }
+    });
+
+    $(document).on('change', '.constraint', function () {
+      var selected = $(this).find('option:selected').text();
+      var type = selected.split(" ").shift();
+      var sensorType = '<label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="type'+type+'"></br>';
+      var sensorValue = '<label>Sensor Value</label></br><input type="text" class="form-control constraintSensorValue"></br>';
+      function setSensorValue(option){
+       return '<label>Sensor Value</label></br> <select class="form-control constraintSensorValue">'+option+'</select>';
+      };
+      var promptOn = '<label>PromptOn</label></br><input type="text" class="form-control constraintPromptOn"></br>';
+      var sensingIntervalSec = '<label>Sensing Interval (Seconds) </label></br><input type="number" class="form-control constraintSensingSec"></br>';
+      var thresholdHigh = '<label>Threshold High (°C)</label></br><input type="number" class="form-control constraintThresholdHigh"></br>';
+      var thresholdLow = '<label>Threshold Low (°C)</label></br><input type="number" class="form-control constraintThresholdLow"></br>';
+      var distanceThreshold = '<label>Distance Threshold (Cm) </label></br><input type="number" class="form-control constraintDistanceThreshold"></br>';
+      var sensorAttribute = '<label>Sensor Attribute</label></br><input type="text" class="form-control constraintSensorAttribute"></br>';
+      var timeFrom = '<label>Time From</label></br><input type="number" class="form-control constraintTimeFrom"></br>';
+      var timeTo = '<label>Time To</label></br><input type="number" class="form-control constraintTimeTo"></br>';
+
+      $(this).siblings('.constraintFields').empty();
+      if (selected == 'Light Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType +setSensorValue('<option>bright</option><option>dark</option>'));
+      }
+      if (selected == 'Screen Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType +setSensorValue('<option>on</option><option>off</option>')); 
+      }
+      if (selected == 'PhoneCall Constraint'){
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>calling</option><option>notCalling</option>'));
+      }
+      if (selected == 'Activity Constraint'){
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>onBicycle</option><option>onFoot</option><option>running</option><option>still</option><option>inVehicle</option><option>walking</option>'));
+         }
+      if (selected == 'Accelerometer Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>upFlat</option><option>downFlat</option><option>unknown</option>') + sensingIntervalSec);
+      }
+      if (selected == 'SpecialCalendarEvent Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue + sensingIntervalSec);
+      }
+      if (selected == 'Battery Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>low</option><option>full</option><option>charging</option><option>ok</option>') + sensingIntervalSec);
+      }
+      if (selected == 'Microphone Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>humanVoice</option><option>noisy</option><option>silent</option>')  + sensingIntervalSec);
+      }
+      if (selected == 'Temperature Constraint' || selected == 'Humidity Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>high</option><option>low</option><option>normal</option>') + sensingIntervalSec + thresholdHigh + thresholdLow);
+      }
+      if (selected == 'Location Constraint' || selected == 'NotificationApp Constraint' || selected == 'NotificationCategory Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue);
+      }
+      if (selected == 'CalendarEvent Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType + setSensorValue('<option>event</option><option>noEvent</option>') + sensingIntervalSec);
+      }
+      if (selected == 'Proximity Constraint') {
+        $(this).siblings('.constraintFields').append(sensorType +  setSensorValue('<option>phoneIsCloseToFace</option><option>phoneIsAwayFromFace</option>') + sensingIntervalSec + distanceThreshold);
+      }
+      if (selected == 'LocalTime Constraint') {
+        $(this).siblings('.constraintFields').append(timeFrom + timeTo);
+      }
+    });
+    $(document).on('change', '.dataFormat', function () {
+     var title = "<label for='stepItemTitle'>Title</label></br><input type='text' class='form-control'>"; 
+     var text =  "<label for='stepItemText'>Text</label></br><input type='text' class='form-control'>";
+     var detailText = "<label for='detailText'>Detail Text</label></br> <input type='text' class='form-control'>"; 
+     var image =  "<label for='image'>Image</label></br><input type='file' class='form-control'>"; 
+     var resultFormat = '<label for="confidential">Result Format</label></br><select class="form-control data-target"> <option>Ordinal</option> <option>Nominal</option> <option>Scale </option> </select>';
+     var templateImage = "<label for='image'> Template Image</label></br><input type='file' class='form-control'>"; 
+     var templateVideo = "<label for='image'>Template Video </label></br> <input type='file' class='form-control'>";
+     var audioDuration = "<label for='audioDuration'>Duration </label><input type='number' class='form-control'>";
+     var dataStyleNumeric = "<label for='dateStyle'>Style</label></br><select class='form-control dataStyle'></option> <option>decimal</option> <option>integer</option></select>";  
+     var dataStyleTextChoice = "<label for='dateStyle'>Style</label></br><select class='form-control dataStyle'></option> <option>singleChoice </option><option>multipleChoice </option></select>";  
+     var defaultDate = "<label for='defaultdate'> Default Date </label></br><input type='text' class='form-content defaultdate' style='height:30px; width:95px;'/><br>";
+     var minimumDate =  "<label for='minimumdate'> Minimum Date </label></br> <input type='text' class='form-content minimumdate' style='height:30px; width:95px;'/><br>";
+     var maximumDate =  "<label for='maximumdate'> Maximum Date </label></br><input type='text' class='form-content maximumdate' style='height:30px; width:95px;'/><br>";
+     var minimum = "<label for='minimum'>Minimum </label><input type='number' class='form-control minimum'>";  
+     var maximum = "<label for='maximum'>Maximum </label><input type='number' class='form-control maximum'>";  
+     var scale = "<label for='scale'>Scale </label><input type='number' class='form-control scale'>";
+     var location = "<label for='useCurrentLocation'>Use Current Location</label></br><select class='form-control useCurrentLocation'>"+
+                   "<option>true</option><option>false</option></br></select>";
+     var maximumLength = "<label for='maximumLength'>Maximum Length </label><input type='number' class='form-control maximumLength'>";  
+     var multipleLines = "<label for='multipleLines'>Multiple Lines</label></br> <select class='form-control multipleLines'>"+
+                     "<option>true</option><option>false</option></br></select>";
+     var step =   "<label for='step'>Step </label><input type='number' class='form-control step'>";  
+     var defaultValue = "<label for='defaultValue'>Default Value </label><input type='number' class='form-control defaultValue'>";  
+     var vertical = "<label for='vertical'> Vertical</label></br><select class='form-control vertical'>"+
+                    "<option>true</option><option>false</option></br></select></br>";
+     var scaleItemAccordion = "<p><button class='btn btn-outline-primary addScaleItem' type='button'>Add ScaleItem</button> <button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>"+                
+     "<div class='scaleItemAccordion'><h3 value='1'class='scaleItemCount'>Scale Item 1 <span class='glyphicon glyphicon-trash' style='"+
+                              "right: 1%;position: absolute; top: 25%;'></span></h3> <div>"+  
+                              "<label for='label'>Label</label></br><input type='text' class='form-control scaleLabel'>"+ 
+                              "<label for='value'>Value</label></br><input type='text' class='form-control value'> </div></div>";
+    var defaultTime = "<label for='defaultTime'>Default Time</label></br><input type='text' class='form-control defaultTime'>";
+    var textChoiceAccordion =" <p><button class='btn btn-outline-primary addTextChoice' type='button'>Add TextChoice</button><button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>"+                  
+                             "<div class='textChoiceAccordion'><h3 value='1' class='textChoiceCount'>Text Choice 1 <span class='glyphicon glyphicon-trash' style='"+
+                              "right: 1%;  position: absolute;  top: 25%; '></span></h3>  <div>    <label for='file'>Text</label></br> "+
+                              "<input type='text' class='form-control file' <label for='value' >Value </label></br>"+
+                              "<input type='text' class='form-control value'> </div></div>";                  
+    var imageChoicesAccordion = " <p><button class='btn btn-outline-primary addImageChoice' type='button'>Add ImageChoice</button><button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>"+                
+                              "<div class='imageChoicesAccordion'><h3 value='1' class='imageChoicesCount'>Image Choice 1 <span class='glyphicon glyphicon-trash' style='"+
+                              "right: 1%; position: absolute; top: 25%;'></span></h3> <div>  <label for='file'>File </label></br>"+
+                              "<input type='text' class='form-control file'><label for='value'>Value </label></br> <input type='text' class='form-control value'></div></div>";
+     $(this).siblings('.dataType').empty();
+    var selected = $(this).find('option:selected').text();
+    if (selected == 'Instruction') {
+        $(this).siblings('.dataType').append(title + text + detailText + image);
+      }
+    if (selected == 'Image') {
+        $(this).siblings('.dataType').append(title + text  + templateImage);
+      }  
+    if (selected == 'Video') {
+        $(this).siblings('.dataType').append(title + text +  templateVideo);
+      }
+    if (selected == 'Audio') {
+        $(this).siblings('.dataType').append(title + text + audioDuration);
+      }     
+    if (selected == 'Date') {
+        $(this).siblings('.dataType').append(title + text + dataStyle + defaultDate + minimumDate + maximumDate);
+    }
+    if (selected == 'Email') {
+        $(this).siblings('.dataType').append(title + text);
+    }
+    if (selected == 'Numeric') {
+        $(this).siblings('.dataType').append(title + text + dataStyleNumeric + minimum + maximum + scale);
+      }
+   if (selected == 'Location') {
+        $(this).siblings('.dataType').append(title + text + location);
+      }        
+  if (selected == 'Text') {
+        $(this).siblings('.dataType').append(title + text + maximumLength + multipleLines);
+      }   
+  if (selected == 'DiscreteScale') {
+        $(this).siblings('.dataType').append(title + text + maximum + minimum + step+ defaultValue + vertical+ scaleItemAccordion+ resultFormat);
+        $(this).siblings('.dataType').children('.scaleItemAccordion').accordion().accordion('refresh');
+      }        
+  if (selected == 'ContinuousScale') {
+        $(this).siblings('.dataType').append(title + text + maximum + minimum + defaultValue + vertical+ scaleItemAccordion+ resultFormat);
+        $(this).siblings('.dataType').children('.scaleItemAccordion').accordion().accordion('refresh');
+      }    
+  if (selected == 'TimeOfDay') {
+        $(this).siblings('.dataType').append(title + text + defaultTime);
+      }   
+  if (selected == 'ImageChoice') {
+        $(this).siblings('.dataType').append(title + text + imageChoicesAccordion + resultFormat);
+        $(this).siblings('.dataType').children('.imageChoicesAccordion').accordion().accordion('refresh');
+      }
+  if (selected == 'TextChoice') {
+        $(this).siblings('.dataType').append(title + text + dataStyleTextChoice + textChoiceAccordion + resultFormat);
+        $(this).siblings('.dataType').children('.textChoiceAccordion').accordion().accordion('refresh');
+      }                                                                  
+    });
+  $(document).on("click", ".addScaleItem", function(){
+  var scaleItemCount = $(this).parent().siblings('.scaleItemAccordion').children('h3').last().attr("value");
+  if (scaleItemCount == undefined) { scaleItemCount = 1;
+      } else { scaleItemCount++; }
+  $(this).parent().siblings('.scaleItemAccordion').append("<h3 value='"+scaleItemCount+"' class='scaleItemCount'>Scale Item "+scaleItemCount+ "<span class='glyphicon glyphicon-trash' style='"+
+                  "right: 1%; position: absolute; top: 25%;'></span></h3> <div><label for='label'>Label</label></br><input type='text' class='form-control scaleLabel'>"+ 
+                              "<label for='value'>Value</label></br><input type='text' class='form-control value'> </div></div>");
+  $(this).parent().siblings('.scaleItemAccordion').accordion().accordion('refresh');
+  });
+
+  $(document).on("click", ".addImageChoice", function(){
+  var imageChoiceCount = $(this).parent().siblings('.imageChoicesAccordion').children('h3').last().attr("value");
+  if (imageChoiceCount == undefined) { imageChoiceCount = 1;
+      } else { imageChoiceCount++; }
+  $(this).parent().siblings('.imageChoicesAccordion').append("<h3 value='"+imageChoiceCount+"' class='imageChoicesCount'>Image Choice "+imageChoiceCount+" <span class='glyphicon glyphicon-trash' style='"+
+                              "right: 1%; position: absolute; top: 25%;'></span></h3> <div>  <label for='file'>File </label></br>"+
+                              "<input type='text' class='form-control file'><label for='value'>Value </label></br> <input type='text' class='form-control value'></div></div>");
+  $(this).parent().siblings('.imageChoicesAccordion').accordion().accordion('refresh');
+  });
+  $(document).on("click", ".addTextChoice", function(){
+  var textChoiceCount = $(this).parent().siblings('.textChoiceAccordion').children('h3').last().attr("value");
+  if (textChoiceCount == undefined) { textChoiceCount = 1;
+      } else { textChoiceCount++; }
+  $(this).parent().siblings('.textChoiceAccordion').append("<h3 value='"+textChoiceCount+"'class='textChoiceCount'>Text Choice "+textChoiceCount+"<span class='glyphicon glyphicon-trash' style='"+
+                              "right: 1%;  position: absolute;  top: 25%; '></span></h3>  <div>  <label for='file'>Text</label></br> "+
+                              "<input type='text' class='form-control file' <label for='value' >Value </label></br>"+
+                              "<input type='text' class='form-control value'> </div></div>");  
+ $(this).parent().siblings('.textChoiceAccordion').accordion().accordion('refresh');
+  });
+  }); 
+  </script>
+  
+
+<div class ="container">
+<div class='row'>
+ <div class='col-md-4'>
+  <a class="btn btn-primary btn-lg" style="margin-bottom: 5%" href="/addstudy"><span class="glyphicon glyphicon-plus" style="right:2%"></span>  Create Study </a>
+  <a class="btn btn-primary btn-lg" style="margin-bottom: 5%" href="/admin/study/upload-study"><span class="glyphicon glyphicon-upload" style="right:2%"></span>  Upload Study </a>
+  <button type='button' class='btn btn-secondary btn-lg'  style="margin-bottom: 5%" id="export"><span class="glyphicon glyphicon-save"></span> Export</button>
+ 
+
+</div>
+</div>
+
+  <div class='row'>
+        <div class='col-md-12' id="message">
+        </div>  
+  </div>
+    
+  <% for(var i=0; i < studies.length; i++) { %>
+    <ul>
+    <li class='list-group-item' id="item<%= studies[i].id%>"> 
+        <div class='row'>
+          <div class='col-md-8'>
+             <h4 data-toggle="collapse" data-target="#study<%=i%>" aria-expanded="false" aria-controls="study<%=i%>"><%= studies[i].name%></h4>
+          </div>
+          <div class='col-md-4'>
+                  <div class="btn-group">
+                      <!-- <button type='button' class='btn btn-primary' data-toggle="collapse" data-target="#study<%=i%>" aria-expanded="false" aria-controls="study<%=i%>" id="<%= studies[i].id%>">Edit</button> -->
+                      <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Options
+                      </button>
+                      <div class="dropdown-menu">
+                        <button class="dropdown-item" value="<%= studies[i].id%>" >Delete</button>
+                        <a class="dropdown-item" href="/admin/invitation/<%= studies[i].id%>">Invite researchers</a>
+                        <a class="dropdown-item" href="/admin/result/<%= studies[i].id%>">Show Statistics</a>
+                        <button class="dropdown-item" value="<%= studies[i].id%>">Create QR Code</button>
+                        <button class="dropdown-item" value="<%= studies[i].id%>">Confirm Study</button>
+                      </div>
+                    </div>
+          </div>
+         </div>
+          <div class="collapse multi-collapse" id="study<%=i%>">  
+          <div class='row'>
+            <div class='col-md-8'>
+            <form id="form<%= studies[i].id%>">
+             <div class="form-group">
+                  <label for="studyName">Name </label>
+                  <input type="text" class="form-control" id="studyName<%= studies[i].id%>" value="<%= studies[i].name%>">  
+                  <label for="studyDescription">Description </label>
+                  <input type="text" class="form-control" id="studyDescription<%= studies[i].id%>" value="<%= studies[i].description%>">  
+                  <label for="minimumStudyDurationPerPerson">Minimum Study Duration per Person (Days)</label>
+                  <input type="number" class="form-control" id="minimumStudyDurationPerPerson<%= studies[i].id%>" value="<%= studies[i].minimumStudyDurationPerPerson%>">
+                  <label for="maximumStudyDurationPerPerson">Maximum Study Duration per Person (Days)</label>
+                  <input type="number" class="form-control" id="maximumStudyDurationPerPerson<%= studies[i].id%>" value="<%= studies[i].minimumStudyDurationPerPerson%>">
+                  <label for="userSetsStartDate"> User sets start date</label>
+                  <select class="form-control" id="userSetsStartDate<%= studies[i].id%>">
+                    <% if(studies[i].userSetsStartDate == true){ %>
+                        <option selected>true</option>
+                        <option>false</option>
+                    <% } else{ %>  
+                      <option>true</option>
+                      <option selected>false</option>
+                   <% } %>
+                         </br>
+                 </select>
+                 <label for="userSetsTimeRestrictions"> User sets time restrictions</label>
+                 <select class="form-control" id="userSetsTimeRestrictions<%= studies[i].id%>">
+                   <% if(studies[i].userSetsTimeRestrictions == true){ %>
+                       <option selected>true</option>
+                       <option>false</option>
+                   <% } else{ %>  
+                     <option>true</option>
+                     <option selected>false</option>
+                  <% } %>
+                        </br>
+                </select>
+				        <label for="isPublic">Study should be public</label>
+                 <select class="form-control" id="isPublic<%= studies[i].id%>">
+                  <% if(studies[i].isPublic == true){ %>
+                      <option selected>true</option>
+                      <option>false</option>
+                  <% } else{ %>  
+                    <option>true</option>
+                    <option selected>false</option>
+                 <% } %>
+                       </br>
+               </select> 
+                 <label for="earliestBeginOfDataGathering"> Earliest Begin of Data Gathering </label></br>
+                 <input type="text" class="form-content earliestBeginOfDataGathering" id="earliestBeginOfDataGathering<%= studies[i].id%>" value="<%= studies[i].earliestBeginOfDataGathering %>"  style="height:30px; width:95px;"/><br>
+                 <label for="latestBeginOfDataGathering"> Latest Begin of Data Gathering </label></br>
+                 <input type="text" class="form-content latestBeginOfDataGathering" id="latestBeginOfDataGathering<%= studies[i].id%>"  value="<%= studies[i].latestBeginOfDataGathering %>"  style="height:30px; width:95px;"/><br>
+                 <label for="defaultFromHour"> Default starting time </label></br>
+                 <input type="text" class="form-control defaultFromHour"  id="defaultFromHour<%= studies[i].id%>" value="<%= studies[i].defaultFromHour %>"  style="height:30px; width:95px;"/>  
+                 <label for="defaultToHour"> Default ending time </label></br>
+                 <input type="text" class="form-control defaultToHour" id="defaultToHour<%= studies[i].id%>" value="<%= studies[i].defaultToHour %>"  style="height:30px; width:95px;"/>  
+                 <label for="notifValidSec">Notification Validity (Seconds)</label>
+                 <input type="number" class="form-control" id="notifValidSec<%= studies[i].id%>" value="<%= studies[i].notifValidSec%>">
+                 <label for="promptingWithInterval">Prompting with Interval</label>
+                 <select class="form-control promptingWithInterval" id="promptingWithInterval<%= studies[i].id%>">
+                   <% if(studies[i].promptingWithInterval == true){ %>
+                       <option selected>true</option>
+                       <option>false</option>
+                       <br>
+                   </select>    
+                   <label for="promptingIntervalSec">Prompting Interval (Seconds) </label>
+                  <input type="number" class="form-control promptingIntervalSec" id="promptingIntervalSec<%= studies[i].id%>" value="<%= studies[i].promptingIntervalSec%>">
+                   <% } else{ %>  
+                     <option>true</option>
+                     <option selected>false</option>
+                        </br>
+                </select>
+                <label for="promptingIntervalSec">Prompting Interval (Seconds) </label>
+                <input type="number" class="form-control promptingIntervalSec" id="promptingIntervalSec<%= studies[i].id%>" disabled>
+                <% } %>
+                <label for="repeatingAPrompt">Repeating a Prompt</label>
+                <select class="form-control repeatingAPrompt" id="repeatingAPrompt<%= studies[i].id%>">
+                  <% if(studies[i].repeatingAPrompt == true){ %>
+                      <option selected>true</option>
+                      <option>false</option>
+                     </br>
+                   </select>
+                   <label for="repeatDelaySeconds">Repeat Delay (Seconds) </label>
+                  <input type="number" class="form-control repeatDelaySeconds" id="repeatDelaySeconds<%= studies[i].id%>" value="<%= studies[i].repeatDelaySeconds%>">
+                  <% } else{ %>  
+                    <option>true</option>
+                    <option selected>false</option>
+                       </br>
+               </select>
+                <label for="repeatDelaySeconds">Repeat Delay (Seconds) </label>
+                <input type="number" class="form-control repeatDelaySeconds" id="repeatDelaySeconds<%= studies[i].id%>" disabled>
+                <% } %>
+                <p><button class="btn btn-outline-primary addTask" type="button" id='addTask<%=j+1%>'>Add Task</button>
+                  <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>
+                  <div class="taskAccordion" id="taskAccordion<%= studies[i].id%>">
+                 <% for(var j=0; j < studies[i].tasks.length; j++) { %>
+                        <h3 value="<%=j+1%>" class="taskCount">Task <%=j+1%>
+                          <span class='glyphicon glyphicon-trash' style='
+                          right: 1%;
+                          position: absolute;
+                          top: 25%;
+                          '></span></h3>     
+                        <div>
+                        <label for="taskName">Name</label></br>
+                        <input type="text" class="form-control" id="taskName<%=j+1%>" value="<%= studies[i].tasks[j].taskName%>">  
+                        <label for="personalData">Contains personal data </label></br> 
+                        <select class="form-control" id="personalData<%=j+1%>">
+                          <% if(studies[i].tasks[j].personalData == true){ %>
+                              <option selected>true</option>
+                              <option>false</option>
+                          <% } else{ %>  
+                            <option>true</option>
+                            <option selected>false</option>
+                         <% } %>
+                               </br>
+                       </select>
+                        <label for="taskTrigger">Trigger</label></br>
+                        <input type="text" class="form-control" id="taskTrigger<%=j+1%>" value="<%= studies[i].tasks[j].trigger%>"> 
+                        
+                        <p><button class="btn btn-outline-primary addStep" type="button" id='addStep<%=k+1%>'>Add Step</button>
+                          <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>    
+                          <div class="stepAccordion" id="stepAccordion<%= studies[i].id%>"> 
+                        <% for(var k=0; k < studies[i].tasks[j].steps.length; k++) { %>
+                  <h3 value="<%=k+1%>" class="stepCount">Step <%=k+1%><span class='glyphicon glyphicon-trash' style='
+                    right: 1%;
+                    position: absolute;
+                    top: 25%;
+                '></span></h3>
+                  <div>
+                  <label for="stepName">Name</label></br>
+                  <input type="text" class="form-control" id="stepName<%=j+1%>s<%=k+1%>" value="<%= studies[i].tasks[j].stepName%>">  
+                  <p><button class="btn btn-outline-primary addStepItem" type="button" id='addStepItem'>Add StepItem</button>
+                    <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>    
+                  <div class="stepItemAccordion">
+                      <% for(var f=0; f < studies[i].tasks[j].steps[k].stepItems.length; f++) { %>
+                      <h3 value="<%=f+1%>" class="stepCount">Step Item <%=f+1%> <span class='glyphicon glyphicon-trash' style='
+                        right: 1%;
+                        position: absolute;
+                        top: 25%;
+                    '></span></h3>
+                      <div>  
+                  <label for="variableName">Variable Name</label></br>
+                  <input type="text" class="form-control" id="variableName"> 
+                  <label for="variableLabel">Variable Label</label></br>
+                  <input type="text" class="form-control" id="variableLabel"> 
+                  <label for="optional">Optional</label></br>
+                  <select class="form-control" id="optional">
+                        <option selected>true</option>
+                        <option>false</option>
+                         </br>
+                   </select>         
+                   <label for="confidential">Confidential</label></br>
+                   <select class="form-control" id="confidential">
+                      <option selected>true</option>
+                      <option>false</option>
+                       </br>
+                 </select> 
+                 <label for="confidential">Data Format</label></br>
+                 <select class="form-control dataFormat">
+                    <option hidden><%= studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type %></option> 
+                    <option>Instruction</option>
+                    <option>Image</option>
+                    <option>Video</option>
+                    <option>Audio</option>
+                    <option>Date</option>
+                    <option>Email</option>
+                    <option>Numeric</option>
+                    <option>Location</option>
+                    <option>Text</option>
+                    <option>DiscreteScale</option>
+                    <option>ContinuousScale</option>
+                    <option>TimeOfDay</option>
+                    <option>ImageChoice</option>
+                    <option>TextChoice</option>
+                    <option>Activity</option>
+                    <option>Light</option>
+                    <option>Screen</option>
+                    <option>Accelerometer</option>
+                    <option>Temperature</option>
+                    <option>PhoneCall</option>
+                    <option>Proximity</option>
+                    <option>Battery</option>
+                    <option>Calendar</option>
+                    <option>Notification</option>
+                    <option>Humidity</option>
+                    <option>Microphone</option>
+                    </select>
+                    <div class="dataType">
+                    <% if(studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Instruction") { %>
+                    <label for="stepItemTitle">Title</label></br>
+                    <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                    <label for="stepItemText">Text</label></br>
+                    <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>"> 
+                    <label for="detailText">Detail Text</label></br>
+                    <input type="text" class="form-control" id="detailText"  value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.detailText%>"> 
+                    <label for="image">Image</label></br>
+                    <input type="file" class="form-control" id="image"> 
+                    <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Image") {%>
+                      <label for="stepItemTitle">Title</label></br>
+                      <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                      <label for="stepItemText">Text</label></br>
+                      <input type="text" class="form-control" id="stepItemText"  value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>"> 
+                      <label for="image"> Template Image</label></br>
+                      <input type="file" class="form-control" id="image"> 
+                    <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Video") {%>
+                      <label for="stepItemTitle">Title</label></br>
+                      <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                      <label for="stepItemText">Text</label></br>
+                      <input type="text" class="form-control" id="stepItemText"  value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>"> 
+                      <label for="image">Template Video </label></br>
+                      <input type="file" class="form-control" id="image"> 
+                      <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Audio") {%>
+                       <label for="stepItemTitle">Title</label></br>
+                      <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                      <label for="stepItemText">Text</label></br>
+                      <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>"> 
+                      <label for="audioDuration">Duration </label>
+                      <input type="number" class="form-control id="audioDuration" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.duration%>">  
+                      <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Date") {%>
+                      <label for="stepItemTitle">Title</label></br>
+                      <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                      <label for="stepItemText">Text</label></br>
+                      <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                      <label for="dateStyle">Style</label></br>
+                      <input type="text" class="form-control" id="dateStyle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.style%>">  
+                      <label for="defaultdate"> Default Date </label></br>
+                      <input type="text" class="form-content defaultdate" id="defaultdate" style="height:30px; width:95px;" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.defaultdate%>"/><br>
+                      <label for="minimumdate"> Minimum Date </label></br>
+                      <input type="text" class="form-content minimumdate" id="minimumdate" style="height:30px; width:95px;" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.minimumdate%>"/><br>
+                      <label for="maximumdate"> Maximum Date </label></br>
+                      <input type="text" class="form-content maximumdate" id="maximumdate" style="height:30px; width:95px;"value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.maximumdate%>"/><br>
+                      <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Email") {%>
+                      <label for="stepItemTitle">Title</label></br>
+                      <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                      <label for="stepItemText">Text</label></br>
+                      <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                      <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Numeric") {%>
+                        <label for="stepItemTitle">Title</label></br>
+                        <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                        <label for="stepItemText">Text</label></br>
+                        <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                        <label for="dateStyle">Style</label></br>
+                        <input type="text" class="form-control" id="dateStyle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.style%>">  
+                        <label for="minimum">Minimum </label>
+                        <input type="number" class="form-control id="minimum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.minimum%>">  
+                        <label for="maximum">Maximum </label>
+                        <input type="number" class="form-control id="maximum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.maximum%>">  
+                        <label for="scale">Scale </label>
+                        <select class="form-control scale">
+                          <option hidden><%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scale%></option> 
+                          <option>decimal</option> <option>integer</option> 
+                        </select>
+                        <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Location") {%>
+                          <label for="stepItemTitle">Title</label></br>
+                          <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                          <label for="stepItemText">Text</label></br>
+                          <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                          <label for="useCurrentLocation">Use Current Location</label></br>
+                          <select class="form-control" id="useCurrentLocation">
+                                <option hidden><%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.useCurrentLocation%></option>
+                                <option>true</option>
+                                <option>false</option>
+                                 </br>
+                           </select>       
+                           <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Text") {%>
+                            <label for="stepItemTitle">Title</label></br>
+                            <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                            <label for="stepItemText">Text</label></br>
+                            <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                            <label for="maximumLength">Maximum Length </label>
+                            <input type="number" class="form-control id="maximum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.maximumLength%>">  
+                            <label for="multipleLines">Multiple Lines</label></br>
+                            <select class="form-control" id="multipleLines">
+                                  <option hidden><%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.multipleLines%></option>
+                                  <option>true</option>
+                                  <option>false</option>
+                                   </br>
+                             </select>  
+                             <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "DiscreteScale") {%> 
+                              <label for="stepItemTitle">Title</label></br>
+                              <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                              <label for="stepItemText">Text</label></br>
+                              <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                              <label for="maximum">Maximum </label>
+                              <input type="number" class="form-control id="maximum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.maximum%>">        
+                              <label for="minimum">Minimum </label>
+                              <input type="number" class="form-control id="minimum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.minimum%>">  
+                              <label for="step">Step </label>
+                              <input type="number" class="form-control id="step" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.step%>">  
+                              <label for="defaultValue">Default Value </label>
+                              <input type="number" class="form-control id="defaultValue" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.defaultValue%>">  
+                              <label for="vertical"> Vertical</label></br>
+                              <select class="form-control" id="vertical">
+                                    <option hidden><%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.vertical%></option>
+                                    <option>true</option>
+                                    <option>false</option>
+                                     </br>
+                               </select>  
+                               <p><button class="btn btn-outline-primary addScaleItem" type="button">Add ScaleItem</button>
+                                <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>                
+                               <div class="scaleItemAccordion">
+                                <% for(var n=0; n < studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scaleItems.length; n++) { %>
+                                <h3 value="<%=n+1%>" class="scaleItemCount">Scale Item <%=n+1%> <span class='glyphicon glyphicon-trash' style='
+                                    right: 1%;
+                                    position: absolute;
+                                    top: 25%;
+                                '></span></h3>
+                                  <div>  
+                                <label for="label">Label</label></br>
+                                <input type="text" class="form-control scaleLabel" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scaleItems[n].label %>"> 
+                                <label for="value">Value</label></br>
+                                <input type="text" class="form-control value" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scaleItems[n].value %>">
+                                  </div>
+                                <% } %>
+                                </div>
+                                <label for="resultFormat">Result Format</label></br>
+                                <select class="form-control data-target">
+                               <option hidden><%= studies[i].tasks[j].steps[k].stepItems[f].dataFormat.resultFormat %></option> 
+                               <option>Ordinal</option> <option>Nominal</option> <option>Scale </option> 
+                               </select>
+                                <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "ContinuousScale") {%>
+                              <label for="stepItemTitle">Title</label></br>
+                              <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                              <label for="stepItemText">Text</label></br>
+                              <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                              <label for="maximum">Maximum </label>
+                              <input type="number" class="form-control id="maximum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.maximum%>">        
+                              <label for="minimum">Minimum </label>
+                              <input type="number" class="form-control id="minimum" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.minimum%>">  
+                              <label for="defaultValue">Default Value </label>
+                              <input type="number" class="form-control id="defaultValue" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.defaultValue%>">  
+                              <label for="vertical"> Vertical</label></br>
+                              <select class="form-control" id="vertical">
+                                    <option hidden><%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.vertical%></option>
+                                    <option>true</option>
+                                    <option>false</option>
+                                     </br>
+                               </select>  
+                               <p><button class="btn btn-outline-primary addScaleItem" type="button">Add ScaleItem</button>
+                                <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>                
+                               <div class="scaleItemAccordion">
+                               <% for(var n=0; n < studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scaleItems.length; n++) { %>
+                                <h3 value="<%=n+1%>" class="scaleItemCount">Scale Item <%=n+1%> <span class='glyphicon glyphicon-trash' style='
+                                  right: 1%;
+                                  position: absolute;
+                                  top: 25%;
+                              '></span></h3>
+                                <div>  
+                                <label for="label">Label</label></br>
+                                <input type="text" class="form-control" id="label" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scaleItems[n].label %>"> 
+                                <label for="value">Value</label></br>
+                                <input type="text" class="form-control" id="value" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.scaleItems[n].value %>">
+                                </div>
+                                <% } %>
+                                </div>
+                                <label for="confidential">Result Format</label></br>
+                                <select class="form-control data-target">
+                               <option hidden><%= studies[i].tasks[j].steps[k].stepItems[f].dataFormat.resultFormat %></option> 
+                               <option>Ordinal</option> <option>Nominal</option><option>Scale </option> 
+                               </select>
+                           <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "TimeOfDay") {%>  
+                              <label for="stepItemTitle">Title</label></br>
+                              <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                              <label for="stepItemText">Text</label></br>
+                              <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                              <label for="defaultTime">Default Time</label></br>
+                              <input type="text" class="form-control" id="defaultTime" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.defaultTime%>">  
+                              <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "ImageChoice") {%> 
+                              <label for="stepItemTitle">Title</label></br>
+                              <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                              <label for="stepItemText">Text</label></br>
+                              <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">   
+                              <p><button class="btn btn-outline-primary addImageChoice" type="button">Add ImageChoice</button>
+                                <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>                
+                              <div class="imageChoicesAccordion">
+                                <% for(var n=0; n < studies[i].tasks[j].steps[k].stepItems[f].dataFormat.imageChoices.length; n++) { %>
+                                <h3 value="<%=n+1%>" class="imageChoicesCount">Image Choice <%=n+1%> <span class='glyphicon glyphicon-trash' style='
+                                  right: 1%;
+                                  position: absolute;
+                                  top: 25%;
+                              '></span></h3>
+                                <div>
+                                <label for="file">File </label></br>
+                                <input type="text" class="form-control file" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.imageChoices[n].file %>"> 
+                                <label for="value">Value </label></br>
+                                <input type="text" class="form-control value" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.imageChoices[n].value %>">
+                                </div>
+                                <% } %>
+                                </div>
+                                <label for="resultFormat">Result Format</label></br>
+                                <select class="form-control data-target">
+                               <option hidden><%= studies[i].tasks[j].steps[k].stepItems[f].dataFormat.resultFormat %></option> 
+                               <option>Ordinal</option> <option>Nominal</option> <option>Scale </option> 
+                              </select>
+                                <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "TextChoice") {%> 
+                                <label for="stepItemTitle">Title</label></br>
+                                <input type="text" class="form-control" id="stepItemTitle" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.title%>"> 
+                                <label for="stepItemText">Text</label></br>
+                                <input type="text" class="form-control" id="stepItemText" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.text%>">  
+                                <label for="dateStyle"> Style</label></br>
+                                <select class="form-control" id="dateStyle">
+                                      <option hidden><%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.style%></option>
+                                      <option>singleChoice</option>
+                                      <option>multipleChoice</option>
+                                       </br>
+                                 </select>
+                                 <p><button class="btn btn-outline-primary addTextChoice" type="button">Add TextChoice</button>
+                                  <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>                  
+                                 <div class="textChoiceAccordion">
+                                 <% for(var n=0; n < studies[i].tasks[j].steps[k].stepItems[f].dataFormat.textChoices.length; n++) { %>
+                                  <h3 value="<%=n+1%>" class="textChoiceCount">Text Choice <%=n+1%> <span class='glyphicon glyphicon-trash' style='
+                                    right: 1%;
+                                    position: absolute;
+                                    top: 25%;
+                                '></span></h3>
+                                  <div>  
+                                  <label for="file">Text</label></br>
+                                  <input type="text" class="form-control" id="file" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.textChoices[n].text %>"> 
+                                  <label for="value" >Value </label></br>
+                                  <input type="text" class="form-control" id="value" value="<%=studies[i].tasks[j].steps[k].stepItems[f].dataFormat.textChoices[n].value %>">
+                                  </div>
+                                  <% } %>
+                                 </div>
+                                 <label for="confidential">Result Format</label></br>
+                                 <select class="form-control data-target">
+                                <option hidden><%= studies[i].tasks[j].steps[k].stepItems[f].dataFormat.resultFormat %></option> 
+                                <option>Ordinal</option> <option>Nominal</option> <option>Scale </option> 
+                                </select>
+                                 <% } else if (studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Activity" || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Light"          || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Screen"         || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Accelerometer"  || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Temperature"    ||
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "PhoneCall"      || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Proximity"      || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Battery"        || 
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Calendar"       ||
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Notification"  ||
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Humidity"  ||
+                               studies[i].tasks[j].steps[k].stepItems[f].dataFormat.type == "Microphone"){ %>
+                              <% } %>
+                    </div>
+                    </div> 
+                    <% } %>
+                   </div>  
+                  </div> 
+                   <% } %>
+                  </div> 
+                </div>
+                   <% } %>  
+                </div>  
+                <p><button class="btn btn-outline-primary addTrigger" type="button" id='addTrigger<%=j+1%>'>Add Trigger</button> 
+                  <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>    
+                  <div class="triggerAccordion">
+                     <% for(var j=0; j < studies[i].triggers.length; j++) { %>
+                     <h3 value="<%=j+1%>" class="triggerCount">Trigger <%=j+1%>
+                      <span class='glyphicon glyphicon-trash' style='
+                      right: 1%;
+                      position: absolute;
+                      top: 25%;
+                  '></span></h3>  
+                     <div> 
+                        <label>Trigger Name </label></br>
+                        <input type="text" class="form-control triggerName" value ="<%= studies[i].triggers[j].triggerName%>"></br>
+                        <label>Minimum Time Between Surveys (Minutes) </label></br>
+                        <input type="number" class="form-control" id="triggerMinTime" value ="<%= studies[i].triggers[j].minTimeBetweenSurveys%>"></br>
+                        <label>Max Count per Day</label></br>
+                        <input type="number" class="form-control" id="triggerMaxCount" value ="<%= studies[i].triggers[j].maxCountPerDay%>"></br>
+                        <label>Triggered By (Trigger Name)</label></br>
+                        <input type="text" class="form-control" id="triggerTriggeredBy" value ="<%= studies[i].triggers[j].triggeredBy%>"></br>   
+                        <label>Loop</label></br>
+                        <select class="form-control triggerLoop">
+                          <option hidden><%= studies[i].triggers[j].loop.type%></option>
+                          <option>Activity Loop</option>
+                          <option>Light Loop</option>
+                          <option>Screen Loop</option>
+                          <option>Location Loop</option>
+                          <option>Accelerometer Loop</option>
+                          <option>Temperature Loop</option>
+                          <option>PhoneCall Loop</option>
+                          <option>Proximity Loop</option>
+                          <option>Battery Loop</option>
+                          <option>Humidity Loop</option>
+                          <option>Microphone Loop</option>
+                          <option>SpecialCalendarEvent Loop</option>
+                          <option>TimeInterval Loop</option>
+                          <option>TimeRandomized Loop</option>
+                          <option>TimeAtEnd Loop</option>
+                          <option>TimeAtStart Loop</option>
+                          <option>TimeAtDate Loop</option>
+                          <option>TimeDaily Loop</option>
+                          <option>CalendarEvent Loop</option>
+                          <option>NotificationApp Loop</option>
+                          <option>NotificationCategory Loop</option>
+                        </select></br>
+                    <div class='loopFields'>
+                   <% if(studies[i].triggers[j].loop.type == "Activity" || studies[i].triggers[j].loop.type == "PhoneCall" || studies[i].triggers[j].loop.type == "Light"  || studies[i].triggers[j].loop.type == "Screen") { %>
+                         <label>Sensor Type</label></br><input type="text" class="form-control loopSensorType" value="<%=studies[i].triggers[j].loop.sensorType %>"></br>
+                         <label>Sensor Value</label></br>
+                         <select class="form-control loopSensorValue"><option hidden><%=studies[i].triggers[j].loop.sensorValue %></option>                       
+                                 <% if (studies[i].triggers[j].loop.type == "Activity") { %> 
+                                 <option>onBicycle</option><option>onFoot</option><option>running</option><option>still</option><option>inVehicle</option><option>walking</option>
+                                 <%} else if (studies[i].triggers[j].loop.type == "PhoneCall") {%>
+                                 <option>calling</option><option>notCalling</option></select>
+                                 <%} else if (studies[i].triggers[j].loop.type == "Light") {%>
+                                  <option>bright</option><option>dark</option>
+                                  <%} else if (studies[i].triggers[j].loop.type == "Screen") {%>
+                                  <option>on</option><option>off</option>
+                                  <%}%>  
+                         </select>            
+                         <input type="text" class="form-control loopSensorValue" value="<%=studies[i].triggers[j].loop.sensorValue %>"></br>
+                        <label>PromptOn</label></br><select class="form-control loopPromptOn"><option hidden><%=studies[i].triggers[j].loop.promptOn %></option><option>entering </option><option>leaving</option></br></select>
+                 
+                   <% } else if (studies[i].triggers[j].loop.type == "Accelerometer" || studies[i].triggers[j].loop.type == "Battery" || studies[i].triggers[j].loop.type == "Microphone") { %>
+                        <label>Sensor Type</label></br><input type="text" class="form-control loopSensorType" value="<%=studies[i].triggers[j].loop.sensorType %>"></br>
+                        <label>Sensor Value</label></br> <select class="form-control loopSensorValue"><option hidden><%=studies[i].triggers[j].loop.sensorValue %></option> 
+                                             <% if (studies[i].triggers[j].loop.type == "Accelerometer") { %> 
+                                             <option>upFlat</option><option>downFlat</option><option>unknown</option>
+                                             <% } else if (studies[i].triggers[j].loop.type == "Battery") { %>
+                                             <option>low</option><option>full</option><option>charging</option><option>ok</option>
+                                             <% } else if (studies[i].triggers[j].loop.type == "Microphone") { %>
+                                              <option>humanVoice</option><option>noisy</option><option>silent</option>
+                        </select>
+                        <label>PromptOn</label></br><select class="form-control loopPromptOn"><option hidden><%=studies[i].triggers[j].loop.promptOn %></option><option>entering </option><option>leaving</option></br></select>
+                        <label>Sensing Interval (Seconds)</label></br><input type="number" class="form-control loopSensingSec" value="<%=studies[i].triggers[j].loop.sensingIntervalSec %>"></br>'
+                  
+                  <% } else if (studies[i].triggers[j].loop.type == "Temperature" || studies[i].triggers[j].loop.type == "Humidity") { %>
+                      <label>Sensor Type</label></br><input type="text" class="form-control loopSensorType" value="<%=studies[i].triggers[j].loop.sensorType %>"></br>
+                      <label>Sensor Value</label></br><select class="form-control loopSensorValue"><option hidden><%=studies[i].triggers[j].loop.sensorValue %></option> 
+                                           <option>high</option><option>low</option><option>normal</option> </select>  
+                      <label>PromptOn</label></br><select class="form-control loopPromptOn"><option hidden><%=studies[i].triggers[j].loop.promptOn %></option><option>entering </option><option>leaving</option></br></select>
+                      <label>Sensing Interval (Seconds)</label></br><input type="number" class="form-control loopSensingSec" value="<%=studies[i].triggers[j].loop.sensingIntervalSec %>"></br>'
+                      <label>Threshold High (°C)</label></br><input type="number" class="form-control loopThresholdHigh" value="<%=studies[i].triggers[j].loop.thresholdHigh %>"></br>
+                      <label>Threshold Low (°C)</label></br><input type="number" class="form-control loopThresholdLow" value="<%=studies[i].triggers[j].loop.thresholdLow %>"></br>
+                     
+                 <% } else if (studies[i].triggers[j].loop.type == "Proximity") { %>
+                        <label>Sensor Type</label></br><input type="text" class="form-control loopSensorType" value="<%=studies[i].triggers[j].loop.sensorType %>"></br>
+                        <label>Sensor Value</label></br> <select class="form-control loopSensorValue"><option hidden><%=studies[i].triggers[j].loop.sensorValue %></option> 
+                        <option>phoneIsCloseToFace</option><option>phoneIsAwayFromFace</option></select>   
+                        <label>PromptOn</label></br><select class="form-control loopPromptOn"><option hidden><%=studies[i].triggers[j].loop.promptOn %></option><option>entering </option><option>leaving</option></br></select>
+                        <label>Sensing Interval (Seconds)</label></br><input type="number" class="form-control loopSensingSec" value="<%=studies[i].triggers[j].loop.sensingIntervalSec %>"></br>
+                        <label>Distance Threshold (Cm) </label></br><input type="number" class="form-control loopDistanceThreshold"value="<%=studies[i].triggers[j].loop.distanceThreshold %>"></br>     
+                        
+                <% } else if (studies[i].triggers[j].loop.type == "CalendarEvent") { %>
+                            <label>Sensor Type</label>type+<%=studies[i].triggers[j].loop.type%></br><input type="text" class="form-control loopSensorType" value="<%=studies[i].triggers[j].loop.sensorType %>"></br>
+                            <label>Sensor Value</label></br> <select class="form-control loopSensorValue"><option hidden><%=studies[i].triggers[j].loop.sensorValue %></option> 
+                            <option>event</option><option>noEvent</option></select> 
+                
+                <% } else if (studies[i].triggers[j].loop.type == "NotificationCategory" || studies[i].triggers[j].loop.type == "NotificationApp" || studies[i].triggers[j].loop.type == "Location" || studies[i].triggers[j].loop.type == "SpecialCalendarEvent") { %>
+                          <label>Sensor Type</label></br><input type="text" class="form-control loopSensorType" value="<%=studies[i].triggers[j].loop.sensorType %>"></br>
+                          <label>Sensor Value</label></br><input type="text" class="form-control loopSensorValue"></br>
+                          <label>PromptOn</label></br><select class="form-control loopPromptOn"><option hidden><%=studies[i].triggers[j].loop.promptOn %></option><option>entering </option><option>leaving</option></br></select>
+                                          <% } if (studies[i].triggers[j].loop.type == "SpecialCalendarEvent") { %>
+                                            <label>Sensing Interval (Seconds)</label></br><input type="number" class="form-control loopSensingSec" value="<%=studies[i].triggers[j].loop.sensingIntervalSec %>"></br>
+                                          <% } %>
+                <% } else if (studies[i].triggers[j].loop.type == "TimeInterval") { %>
+                              <label>Interval in Minutes</label></br><input type="number" class="form-control loopIntervalMinutes" value="<%=studies[i].triggers[j].loop.intervalMinutes %>"></br>
+                          
+                <% } else if (studies[i].triggers[j].loop.type == "TimeRandomised") { %>
+                            <label>Interval in Minutes</label></br><input type="number" class="form-control loopIntervalMinutes" value="<%=studies[i].triggers[j].loop.intervalMinutes %>"></br>
+                            <label>Plus Minus Minutes</label></br><input type="number" class="form-control loopPlusMinusMinutes" value="<%=studies[i].triggers[j].loop.plusMinusMinutes %>"></br>
+                          
+                <% } else if (studies[i].triggers[j].loop.type == "TimeAtEnd" ||studies[i].triggers[j].loop.type == "TimeAtStart" ) { %>
+                <% } else if (studies[i].triggers[j].loop.type == "TimeAtDate") { %>
+                              <label>Date</label></br><input type="text" class="form-control loopDate" value="<%=studies[i].triggers[j].loop.required %>"/></br>
+                              <label>Required</label></br><select class="form-control loopRequired"><option hidden> <%=studies[i].triggers[j].loop.date %></option><option>true</option>
+                              <option>false</option></select></br>
+                <% } else if (studies[i].triggers[j].loop.type == "TimeDailyLoop") { %>   
+                            <label>Hour</label></br><input type="number" class="form-control loopHour" value="<%=studies[i].triggers[j].loop.hour %>"></br>
+                            <label>Minute</label></br><input type="number" class="form-control loopMinute" value="<%=studies[i].triggers[j].loop.minute %>"></br>
+                            <label>Required</label></br><select class="form-control loopRequired"><option hidden> <%=studies[i].triggers[j].loop.date %></option><option>true</option>
+                              <option>false</option></select></br>
+               <% } %>     
+                     </div>
+                     <p><button class="btn btn-outline-primary addConstraint" type="button" id='addConstraint<%=k+1%>'>Add Constraint</button>
+                       <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>      
+                    <div class="constraintAccordion">   
+                    <% for(var k=0; k < studies[i].triggers[j].constraints.length; k++) { %>
+                    <h3 value="<%=k+1%>" class="constraintCount">Constraint <%=k+1%>
+                      <span class='glyphicon glyphicon-trash' style='
+                      right: 1%;
+                      position: absolute;
+                      top: 25%;
+                  '></span></h3>
+                    <div>
+                    <label for="constraintType">Constraint</label></br>
+                        <select class="form-control constraint">
+                          <option hidden><%= studies[i].triggers[j].constraints[k].type%></option>
+                          <option>Activity Constraint</option>
+                          <option>Light Constraint</option>
+                          <option>Screen Constraint</option>
+                          <option>Location Constraint</option>
+                          <option>Accelerometer Constraint</option>
+                          <option>Temperature Constraint</option>
+                          <option>PhoneCall Constraint</option>
+                          <option>Proximity Constraint</option>
+                          <option>Battery Constraint</option>
+                          <option>Humidity Constraint</option>
+                          <option>NotificationApp Constraint</option>
+                          <option>LocalTime Constraint</option>
+                          <option>Microphone Constraint</option>
+                          <option>CalendarEvent Constraint</option>
+                          <option>SpecialCalendarEvent Constraint</option>
+                          <option>NotificationCategory Constraint</option>
+                        </select></br>
+                        <div class='constraintFields'>
+             <% if(studies[i].triggers[j].constraints[k].type == "Activity" || studies[i].triggers[j].constraints[k].type == "Light" || studies[i].triggers[j].constraints[k].type == "Screen" || 
+                studies[i].triggers[j].constraints[k].type  == "PhoneCall" ) { %>
+                     <label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="<%= studies[i].triggers[j].constraints[k].sensorType%>"></br>
+                     <label>Sensor Value</label></br>
+                     <select class="form-control constraintSensorValue"><option hidden><%= studies[i].triggers[j].constraints[k].sensorValue%></option>                       
+                                 <% if (studies[i].triggers[j].constraints[k].type == "Activity") { %> 
+                                 <option>onBicycle</option><option>onFoot</option><option>running</option><option>still</option><option>inVehicle</option><option>walking</option>
+                                 <%} else if (studies[i].triggers[j].constraints[k].type  == "PhoneCall") {%>
+                                 <option>calling</option><option>notCalling</option></select>
+                                 <%} else if (studies[i].triggers[j].constraints[k].type == "Light") {%>
+                                  <option>bright</option><option>dark</option>
+                                  <%} else if (studies[i].triggers[j].constraints[k].type == "Screen") {%>
+                                  <option>on</option><option>off</option>
+                                  <%}%>  
+                     </select>   
+
+             <% } else if (studies[i].triggers[j].constraints[k].type == "Location" || studies[i].triggers[j].constraints[k].type == "SpecialCalendarEvent") { %>
+                     <label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="<%= studies[i].triggers[j].constraints[k].sensorType%>"></br>
+                     <label>Sensor Value</label></br><input type="text" class="form-control constraintSensorValue" value="<%= studies[i].triggers[j].constraints[k].sensorValue%>"></br>
+                                  <% if (studies[i].triggers[j].constraints[k].type == "SpecialCalendarEvent") { %> 
+                                  <label>Sensing Interval (Seconds) </label></br><input type="number" class="form-control constraintSensingSec" value="<%= studies[i].triggers[j].constraints[k].sensingIntervalSec%>"></br>
+                                  <%}%>
+
+             <% } else if (studies[i].triggers[j].constraints[k].type == "NotificationApp" ||  studies[i].triggers[j].constraints[k].type  == "NotificationCategory" ) { %>
+                     <label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="<%= studies[i].triggers[j].constraints[k].sensorType%>"></br>
+                     <label>Sensor Value</label></br><input type="text" class="form-control constraintSensorValue" value="<%= studies[i].triggers[j].constraints[k].sensorValue%>"></br>
+                          
+             <% } else if(studies[i].triggers[j].constraints[k].type == "Accelerometer" || studies[i].triggers[j].constraints[k].type == "Battery" || studies[i].triggers[j].constraints[k].type == "Microphone" 
+             || studies[i].triggers[j].constraints[k].type == "CalendarEvent") { %>
+                     <label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="<%= studies[i].triggers[j].constraints[k].sensorType%>"></br>
+                     <label>Sensor Value</label></br> <select class="form-control constraintSensorValue"><option hidden><%=studies[i].triggers[j].loop.sensorValue %></option> 
+                                   <% if (studies[i].triggers[j].constraints[k].type == "Accelerometer") { %> 
+                                   <option>upFlat</option><option>downFlat</option><option>unknown</option>
+                                   <% } else if (studies[i].triggers[j].constraints[k].type == "Battery") { %>
+                                   <option>low</option><option>full</option><option>charging</option><option>ok</option>
+                                   <% } else if (studies[i].triggers[j].constraints[k].type == "Microphone") { %>
+                                   <option>humanVoice</option><option>noisy</option><option>silent</option>
+                                   <% } else if (studies[i].triggers[j].constraints[k].type == "CalendarEvent") { %>
+                                   <option>event</option><option>noEvent</option></select>  
+                                   <%}%>
+                      </select>
+                      <label>Sensing Interval (Seconds) </label></br><input type="number" class="form-control constraintSensingSec" value="<%= studies[i].triggers[j].constraints[k].sensingIntervalSec%>"></br>
+
+               <% } else if (studies[i].triggers[j].constraints[k].type == "Temperature" || studies[i].triggers[j].constraints[k].type == "Humidity") { %>
+                      <label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="<%= studies[i].triggers[j].constraints[k].sensorType%>"></br>
+                      <label>Sensor Value</label></br><select class="form-control constraintSensorValue"><option hidden><%= studies[i].triggers[j].constraints[k].sensorValue%></option> 
+                      <option>high</option><option>low</option><option>normal</option> </select>
+                      <label>Sensing Interval (Seconds) </label></br><input type="number" class="form-control constraintSensingSec" value="<%= studies[i].triggers[j].constraints[k].sensingIntervalSec%>"></br>
+                      <label>Threshold High (°C)</label></br><input type="number" class="form-control constraintThresholdHigh" value="<%= studies[i].triggers[j].constraints[k].thresholdHigh%>"></br>
+                      <label>Threshold Low (°C)</label></br><input type="number" class="form-control constraintThresholdLow" value="<%= studies[i].triggers[j].constraints[k].thresholdLow%>"></br>
+                  
+                <% } else if(studies[i].triggers[j].constraints[k].type == "Proximity") { %>
+                      <label>Sensor Type</label></br><input type="text" class="form-control constraintSensorType" value="<%= studies[i].triggers[j].constraints[k].sensorType%>"></br>
+                      <label>Sensor Value</label></br> <select class="form-control constraintSensorValue"><option hidden><%= studies[i].triggers[j].constraints[k].sensorValue%></option> 
+                      <option>phoneIsCloseToFace</option><option>phoneIsAwayFromFace</option></select>   
+                      <label>Sensing Interval (Seconds)</label></br><input type="number" class="form-control constraintSensingSec" value="<%= studies[i].triggers[j].constraints[k].sensingIntervalSec%>"></br>
+                      <label>Distance Threshold (cm) </label></br><input type="number" class="form-control constraintDistanceThreshold" value="<%= studies[i].triggers[j].constraints[k].distanceThreshold%>"></br>
+                            
+                <% } else if(studies[i].triggers[j].constraints[k].type == "LocalTime") { %>
+                      <label>Time From</label></br><input type="number" class="form-control constraintTimeFrom" value="<%= studies[i].triggers[j].constraints[k].timeFrom%>"></br>
+                      <label>Time To</label></br><input type="number" class="form-control constraintTimeTo" value="<%= studies[i].triggers[j].constraints[k].timeTo%>"></br>                   
+                        <% } %>
+                        </div>
+                    </div>
+                    <% } %> 
+                   </div>
+                  </div>
+                  <% } %> 
+                </div>
+                <label for="enableInformedConsent">Enable Informed Consent</label>
+                <select class="form-control enableInformedConsent" id="enableInformedConsent<%= studies[i].id%>">
+                    <% if(studies[i].enableInformedConsent == true){ %>
+                      <option selected>true</option>
+                      <option>false</option>
+                       <% } else {%>
+                        <option>true</option>
+                        <option selected>false</option>
+                        <% }%>
+                    </br>
+                </select>
+                <p><button class="btn btn-outline-primary addConsent" type="button" id='addConsent'>Add Consent</button>
+                  <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>    
+                  <div class="consentAccordion" id="consentAccordion<%= studies[i].id%>">
+                   <% for(var j=0; j < studies[i].informedConsent.length; j++) { %>
+                   <h3 value="<%=j+1%>"> Informed Consent <%=j+1%> <span class='glyphicon glyphicon-trash' style='
+                        right: 1%;
+                        position: absolute;
+                        top: 25%;
+                    '></span></h3>
+                  <div>
+                   <label for="confidential">Consent Type</label></br>
+                   <select class="form-control data-target" id="consentType<%=j+1%>">
+                      <option hidden><%= studies[i].informedConsent[j].type%></option>
+                      <option value="overview">Overview</option>
+                      <option value="dataGathering">Data Gathering</option>
+                      <option value="privacy">Privacy</option>
+                      <option value="dataUse">Data Use</option>
+                      <option value="timeCommitment">Time Commitment</option>
+                      <option value="studySurvey">Study Survey</option>
+                      <option value="studyTasks">Study Tasks</option>
+                      <option value="withdrawing">Withdrawing</option>
+                    </select>
+                   <label for="valueConsent">Value </label>
+                   <input type="text" class="form-control" id="valueConsent<%=j+1%>" value="<%= studies[i].informedConsent[j].value%>">   
+                   </div>
+                   <% } %>
+                  </div>  
+              </div> 
+             </form>     
+           </div> 
+          </div>
+            <div class='row'>
+            <div class='col-md-4'>
+                 <button type="button" class="btn btn-success" id="<%= studies[i].id%>">Save</button> 
+            </div>
+            </div>
+         </div>
+   </li>
+   </ul>
+<% } %>
+
+  </div>
+   <!-- <% include admin/parts/footer1.ejs %> -->
+
+
+<!--Changed-->
+</body>
+</div>

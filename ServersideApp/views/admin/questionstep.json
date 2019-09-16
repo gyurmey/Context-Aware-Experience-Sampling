@@ -1,0 +1,71 @@
+{
+  "$ref": "step.json",
+  "title": "Question Step",
+  "type": "object",
+  "id": "questionstep",
+  "properties": {
+        "identifier": {
+            "id": "identifier",
+            "type": "object",
+            "oneOf": [
+                
+                  
+                  {
+                      "$ref": "booleananswerformat.json",
+                      "title": "BooleanQuestionStep"},
+                  {
+                      "$ref": "dateanswerformat.json",
+                      "title": "DateQuestionStep"},
+  
+                  {   "$ref": "heightanswerformat.json",
+                      "title": "HeightQuestionStep"},
+                  { 
+                      "$ref": "emailanswerformat.json",
+                      "title": "EmailQuestionStep"},
+  
+                  {   "$ref": "numericanswerformat.json",
+                      "title": "NumericQuestionStep"},
+                    
+                    
+                  {   "$ref": "locationanswerformat.json",
+                      "title": "LocationQuestionStep"},
+  
+                  {   "$ref": "valuepickeranswerformat.json",
+                      "title": "PickerQuestionStep"},
+                    
+                  {   "$ref": "textanswerformat.json",
+                      "title": "TextQuestionStep"},
+                  {   
+                      "$ref": "scaleanswerformat.json",
+                      "title": "ScaleQuestionStep"},
+  
+                  {   "$ref": "continiousscaleanswerformat.json",
+                      "title": "ContinuousScaleQuestionStep"},
+                    
+                  {   "$ref": "timeofdayanswerformat.json",
+                      "title": "TimeOfDayQuestionStep"},
+                  {
+                      "$ref": "imagechoiceanswerformat.json",
+                      "title": "ImageChoiceQuestionStep"},
+                  {
+                      "$ref": "multiplevaluepickeranswerformat.json",
+                      "title": "MultiplePickerQuestionStep"},
+                  {
+                      "$ref": "textchoiceanswerformat.json",
+                      "title": "TextChoiceQuestionStep"},
+                  {
+                      "$ref": "timeintervalanswerformat.json",
+                      "title": "TimeIntervalQuestionStep"},
+                  {
+                      "$ref": "textscaleanswerformat.json",
+                      "title": "TextScaleQuestionStep"},
+                  {
+                      "$ref": "confirmtextanswerformat.json",
+                      "title": "ConfirmTextQuestionStep"}
+        
+                  ]
+        }
+        
+        
+  }
+}

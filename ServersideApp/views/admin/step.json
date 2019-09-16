@@ -1,0 +1,24 @@
+{ 
+    "title": "Step",
+    "type": "object",
+    "id": "step",
+    "properties": {   
+        "identifier": {
+            "type": "string",
+            "default": "Step1",
+            "description": "Identify your step."
+        },
+        "type":{},
+        "title":{
+            "type": "string",
+            "description": "The title for your step."
+        },
+        "text":{
+            "type": "string",
+            "description": "A text that describes your step."
+        },
+        "optional":{
+            "type": "boolean"
+        }
+        }
+    }

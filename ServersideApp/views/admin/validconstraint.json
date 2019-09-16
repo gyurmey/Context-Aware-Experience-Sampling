@@ -1,0 +1,15 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["valid"]
+        },
+        "validForSeconds": {
+            "type": "number"
+        },
+        "validForMinutes": {
+            "type": "number"
+        }
+    }
+
+}

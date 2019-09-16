@@ -1,0 +1,76 @@
+
+
+
+
+<% include admin/parts/format.ejs %> 
+<body>
+  <% include admin/parts/link.ejs %>
+   <br>
+    <br>
+     <br> 
+  <div class="container">
+      <div class="row">
+            <span class="col-lg-offset-1"></span>
+          
+            <h4><a href="/AllStatistic">Tasks</a></h4>
+            <h4><a href="/admin/result/AllStepsResults/<%=_id%>">  / Steps </a></h4>
+            <h4><a href="/admin/result/AllStepsResults/AllStepsItemResults/<%=_id%>"> / Step Items </a></h4> 
+            <h4> /  LocationResult coordinate </h4>
+      <br>
+      
+    </div>
+  <div class="table-responsive">
+      <table class="table table-bordered table-striped" id="data">
+
+    </table>
+  </div>
+  </div>
+
+  <div id="show"></div>
+  <script>
+
+    var objId = "<%=_id%>";
+    var content = document.getElementById("data");
+   
+      var ourRequest = new XMLHttpRequest();
+      ourRequest.open('GET', '/admin/result/AllStepsResults/getOneStep/getOneStepItem/allcoordinate/' +objId   );
+      ourRequest.onload = function() {
+        if (ourRequest.status >= 200 && ourRequest.status < 400) {
+          var ourData = JSON.parse(ourRequest.responseText);
+          renderHTML(ourData);
+        } else {
+          console.log("error");
+        }
+        
+      };
+    
+      ourRequest.onerror = function() {
+        console.log("Connection error");
+      };
+    
+      ourRequest.send();
+    
+    
+    function renderHTML(data) {
+      var htmlString = "";
+    
+      for (i = 0; i < data[0].stepResults.length; i++) {
+          
+        for(j=0; j < data[0].stepResults[i].stepItemResults.length; j++){
+         
+        if(data[0].stepResults[i].stepItemResults[j].type==='LocationResult'){
+            for(k=0; k < data[0].stepResults[i].stepItemResults[j].coordinate.length;k++){
+             
+              htmlString += "<tr>" + "<th>" + "Coordinates" + "</th>" + "</tr>" + "<tr>" + "<td>" + `<a style="color:blue" href=  http://www.google.com/maps/place/(${data[0].stepResults[i].stepItemResults[j].coordinate[k].Latitude},${data[0].stepResults[i].stepItemResults[j].coordinate[k].Longitude }) > coordinates</a>` + "</td>" + "</tr>";
+             
+            }
+         
+        }
+        htmlString += '</p>';
+    
+      }
+    }
+      content.insertAdjacentHTML('beforeend', htmlString);
+    }
+    
+    </script>

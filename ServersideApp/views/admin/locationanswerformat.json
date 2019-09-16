@@ -1,0 +1,48 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "LocationQuestionStep1"},
+
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["LocationAnswerFormat"]
+
+
+     },
+      "useCurrentLocation": {
+          "type": "boolean",
+          "default": "true",
+          "description": "Indicates whether or not the user’s current location should be automatically entered the first time they tap on the input field."
+      },
+      "feedbackChartType": {
+          "type": "string",
+          "enum": ["None","Map"],
+          "description": "The kind of chart which will be send as feedback to the user"
+      }
+  }
+}

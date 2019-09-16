@@ -1,0 +1,97 @@
+
+
+
+ <% include admin/parts/format.ejs %>
+ <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  
+<div class="container">
+    <header class="row">
+     
+ 
+ <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <h2><b><center>SensQServer</center></b></h2>
+      <hr>
+      </div>
+      
+       </header>
+      </div>
+    
+
+  <div class="container">
+      
+    <div class="col-sm-4">
+     <div class ="card card-body">
+        <legend><b>Login:</b></legend>
+        <% if(typeof errors != 'undefined'){ %> 
+      <% errors.forEach(function(error) { %>
+  <div class="alert alert-warning " role="alert">
+        <%= error.msg %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+   </button>
+  </div>
+      <% }); %> 
+        <% } %>
+      <% if(success_msg != ''){ %>
+    <div class="alert alert-success" role="alert">
+          <%= success_msg %>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+      </div>
+        <% } %> 
+  <% if(error_msg != ''){ %>
+  <div class="alert alert-danger" role="alert">
+  <%= error_msg %>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+    <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <% } %> 
+  <% if(error != ''){ %>
+  <div class="alert alert-danger" role="alert">
+  <%= error%>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+    <% } %> 
+     <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-control"
+            placeholder="Enter Email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            placeholder="Enter Password"
+          />
+        </div>
+        <!-- <div class="g-recaptcha form-group" style="transform:scale(0.85);transform-origin:0;-webkit-transform:scale(0.85);
+        transform:scale(0.85);-webkit-transform-origin:0 0;transform-origin:0 0;" data-sitekey="6Lf81qgUAAAAALMdzOggytLswmqcYNF8sjkNnQ-V"></div> -->
+       
+             <button type='submit' class='btn btn-primary btn-block ' ><span class="glyphicon glyphicon-ok"></span>  Login</button>
+
+      </form>
+      <p class="lead mt-4">
+        <b><a href="/register">Sign Up</a></b> for an account..
+      </p>
+
+
+     
+  
+      </div>
+    </div> 
+    </div>
+

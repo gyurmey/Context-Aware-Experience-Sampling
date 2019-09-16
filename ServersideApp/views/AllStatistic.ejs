@@ -1,0 +1,217 @@
+
+
+
+<% include admin/parts/format.ejs %> 
+<body>
+  <% include admin/parts/link.ejs %>
+
+<div class="container">
+
+    <div class="row">
+        <div class='col-md-4'>
+         <button type='button' class='btn btn-primary btn-lg' id="myButton"><span class="glyphicon glyphicon-save"></span> Export</button>
+         </div>
+       </div> 
+
+<br>
+  </div>
+<div class="container">
+    <table style="background-color:#FFFAFA; font-size: 15px" class="  col-md-1 table table-bordered table-striped" id="number">
+        <tr><td> No.OfResults</td></tr>
+    </table>
+</div>
+  <div class="container">
+      <div class="table-responsive">
+    <table style="background-color:#FFFAFA" class="table table-bordered table-striped" id="data">
+
+    </table>
+</div>
+</div>
+
+<script>
+        const objectToCsv= function(data){
+            const csvRows = [];
+        
+        const headers = Object.keys(data[0]);
+        csvRows.push(headers.join(','));
+        
+        for (const row of data){
+        const values = headers.map( header => {
+            const escaped = ('' +row[header]).replace(/"/g, '\\"');
+            return `"${escaped}"`;
+        });
+        csvRows.push(values.join(','));
+        
+        }
+        
+        return csvRows.join('\n');
+        
+        };
+        
+        const download = function(data) {
+           console.log("donwnload--------------")
+           const blob = new Blob([data], {type: 'text/csv'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'result.csv');
+            document.body.appendChild(a);;
+            a.click();
+            document.body.removeChild(a);
+        };
+        
+        const getReport = async function() {
+        const jsonUrl = '/admin/result/';
+        const res = await fetch(jsonUrl);
+        const json = await res.json();
+        const data=fetchData(json);
+        function fetchData(json){
+          for (i=0; i<json.length; i++){
+          for(j=0;j<json[i].stepResults.length;j++){
+            for(k=0;k<json[i].stepResults[j].stepItemResults.length;k++){
+            if(json[i].stepResults[j].stepItemResults[k].type==='LocationResult'){
+              for(m=0;m<json[i].stepResults[j].stepItemResults[k].coordinate.length;m++){
+              var data= json.map(row => ({
+    userId : row.userId,
+    studyId: row.studyId,
+    taskId: row.taskId,
+    taskName: row.taskName,
+    startDate: row.startDate,
+    endDate: row.endDate,
+    StepResult_stepId: json[i].stepResults[j].stepId,
+    StepResult_stepName: json[i].stepResults[j].stepName,
+    type1:json[i].stepResults[j].stepItemResults[0].type,
+    type2:json[i].stepResults[j].stepItemResults[1].type,
+    type3:json[i].stepResults[j].stepItemResults[2].type,
+    type4:json[i].stepResults[j].stepItemResults[3].type,
+    type5:json[i].stepResults[j].stepItemResults[4].type,
+    type6:json[i].stepResults[j].stepItemResults[5].type,
+    type7:json[i].stepResults[j].stepItemResults[6].type,
+    type8:json[i].stepResults[j].stepItemResults[7].type,
+    type9:json[i].stepResults[j].stepItemResults[8].type,
+    type10:json[i].stepResults[j].stepItemResults[9].type,
+    type11:json[i].stepResults[j].stepItemResults[10].type,
+    type12:json[i].stepResults[j].stepItemResults[11].type,
+    variableName1:json[i].stepResults[j].stepItemResults[0].variableName,
+    variableName2:json[i].stepResults[j].stepItemResults[1].variableName,
+    variableName3:json[i].stepResults[j].stepItemResults[2].variableName,
+    variableName4:json[i].stepResults[j].stepItemResults[3].variableName,
+    variableName5:json[i].stepResults[j].stepItemResults[4].variableName,
+    variableName6:json[i].stepResults[j].stepItemResults[5].variableName,
+    variableName7:json[i].stepResults[j].stepItemResults[6].variableName,
+    variableName8:json[i].stepResults[j].stepItemResults[7].variableName,
+    variableName9:json[i].stepResults[j].stepItemResults[8].variableName,
+    variableName10:json[i].stepResults[j].stepItemResults[9].variableName,
+    variableName11:json[i].stepResults[j].stepItemResults[10].variableName,
+    variableName12:json[i].stepResults[j].stepItemResults[11].variableName,
+    value1:json[i].stepResults[j].stepItemResults[0].value,
+    value2:json[i].stepResults[j].stepItemResults[1].value,
+    value3:json[i].stepResults[j].stepItemResults[2].value,
+    value4:json[i].stepResults[j].stepItemResults[3].value,
+    value5:json[i].stepResults[j].stepItemResults[4].value,
+    value6:json[i].stepResults[j].stepItemResults[5].value,
+    value7:json[i].stepResults[j].stepItemResults[6].value,
+    value8:json[i].stepResults[j].stepItemResults[7].value,
+    value9:json[i].stepResults[j].stepItemResults[8].value,
+    value10:json[i].stepResults[j].stepItemResults[9].value,
+    value11:json[i].stepResults[j].stepItemResults[10].value,
+    value12:json[i].stepResults[j].stepItemResults[11].value,
+    startDate1:json[i].stepResults[j].stepItemResults[0].startDate,
+    startDate2:json[i].stepResults[j].stepItemResults[1].startDate,
+    startDate3:json[i].stepResults[j].stepItemResults[2].startDate,
+    startDate4:json[i].stepResults[j].stepItemResults[3].startDate,
+    startDate5:json[i].stepResults[j].stepItemResults[4].startDate,
+    startDate6:json[i].stepResults[j].stepItemResults[5].startDate,
+    startDate7:json[i].stepResults[j].stepItemResults[6].startDate,
+    startDate8:json[i].stepResults[j].stepItemResults[7].startDate,
+    startDate9:json[i].stepResults[j].stepItemResults[8].startDate,
+    startDate10:json[i].stepResults[j].stepItemResults[9].startDate,
+    startDate11:json[i].stepResults[j].stepItemResults[10].startDate,
+    startDate12:json[i].stepResults[j].stepItemResults[11].startDate,
+    endDate1:json[i].stepResults[j].stepItemResults[0].endDate,
+    endDate2:json[i].stepResults[j].stepItemResults[1].endDate,
+    endDate3:json[i].stepResults[j].stepItemResults[2].endDate,
+    endDate4:json[i].stepResults[j].stepItemResults[3].endDate,
+    endDate5:json[i].stepResults[j].stepItemResults[4].endDate,
+    endDate6:json[i].stepResults[j].stepItemResults[5].endDate,
+    endDate7:json[i].stepResults[j].stepItemResults[6].endDate,
+    endDate8:json[i].stepResults[j].stepItemResults[7].endDate,
+    endDate9:json[i].stepResults[j].stepItemResults[8].endDate,
+    endDate10:json[i].stepResults[j].stepItemResults[9].endDate,
+    endDate11:json[i].stepResults[j].stepItemResults[10].endDate,
+    endDate12:json[i].stepResults[j].stepItemResults[11].endDate,
+    origin1:json[i].stepResults[j].stepItemResults[0].origin,
+    origin2:json[i].stepResults[j].stepItemResults[1].origin,
+    origin3:json[i].stepResults[j].stepItemResults[2].origin,
+    origin4:json[i].stepResults[j].stepItemResults[3].origin,
+    origin5:json[i].stepResults[j].stepItemResults[4].origin,
+    origin6:json[i].stepResults[j].stepItemResults[5].origin,
+    origin7:json[i].stepResults[j].stepItemResults[6].origin,
+    origin8:json[i].stepResults[j].stepItemResults[7].origin,
+    origin9:json[i].stepResults[j].stepItemResults[8].origin,
+    origin10:json[i].stepResults[j].stepItemResults[9].origin,
+    origin11:json[i].stepResults[j].stepItemResults[10].origin,
+    origin12:json[i].stepResults[j].stepItemResults[11].origin,
+    coordinate_Latitude1:json[i].stepResults[j].stepItemResults[k].coordinate[0].Latitude,
+    coordinate_Latitude2:json[i].stepResults[j].stepItemResults[k].coordinate[1].Latitude,
+    coordinate_Latitude3:json[i].stepResults[j].stepItemResults[k].coordinate[2].Latitude,
+    coordinate_Longitude1:json[i].stepResults[j].stepItemResults[k].coordinate[0].Longitude,
+    coordinate_Longitude2:json[i].stepResults[j].stepItemResults[k].coordinate[1].Longitude,
+    coordinate_Longitude3:json[i].stepResults[j].stepItemResults[k].coordinate[2].Longitude
+    }));
+             }
+            }
+
+            }   
+          }
+        }  
+        return data;
+        }
+        
+            const csvData = objectToCsv(data);
+            download(csvData);
+        };
+        (function(){
+            const button = document.getElementById('myButton');
+            button.addEventListener('click', getReport);
+        })();
+        
+        </script>
+  <script>
+    var counter= 0;
+  
+    var content = document.getElementById("data");
+    var result = document.getElementById("number");
+  
+      var ourRequest = new XMLHttpRequest();
+      ourRequest.open('GET', '/admin/result/');
+      ourRequest.onload = function() {
+        if (ourRequest.status >= 200 && ourRequest.status < 400) {
+          var ourData = JSON.parse(ourRequest.responseText);
+                  renderHTML(ourData);
+                 
+        } else {
+          console.log("error");
+        }
+      };
+    
+      ourRequest.onerror = function() {
+        console.log("Connection error");
+      };
+    
+      ourRequest.send();
+        
+    function renderHTML(data) {
+  
+      var htmlString = "";
+      for (i = 0; i < data.length; i++) {
+        htmlString += "<tr>" + "<th>" + "taskName" + "</th>" + "<th>" + "Study Id " + "<th>" + "startDate" + "</th>" +  "<th>" + "endDate" + "</th>" + "</tr>" + "<tr>" + "<td>" + data[i].taskName + "</td>" +  "<td>" + data[i].studyId + "</td>" + "<td>" + data[i].startDate + "</td>" + "<td>" + data[i].endDate + "</td>" + "<td>" + `"<a href='/admin/result/AllStepsResults/${data[i]._id}' class='btn btn-primary btn-lg'>"` + "Step Results"  + "</a>" +"</td>" + "</tr>" ;
+        htmlString += '</p>';
+        counter++;
+      }
+      
+      content.insertAdjacentHTML('beforeend', htmlString);
+      result.insertAdjacentHTML('beforeend', counter);
+    }
+    </script>

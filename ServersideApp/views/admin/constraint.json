@@ -1,0 +1,8 @@
+{
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["time", "count", "valid", "location", "randomised"]
+        }
+    }
+}

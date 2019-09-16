@@ -1,0 +1,83 @@
+
+
+<% include admin/parts/format.ejs %> 
+<body>
+  <% include admin/parts/link.ejs %>
+   <br>
+    <br>
+     <br>
+
+
+  <div class="container">
+      <div class="row">
+          <span class="col-lg-offset-1"></span>
+          <h4><a href="/AllStatistic">Tasks</a></h4>
+          <h4><a href="/admin/result/AllStepsResults/<%=_id%>">  / Steps </a></h4>
+          <h4> / Step Items</h4>
+        <br>
+    </div>
+
+
+    
+  <div class="table-responsive">
+  <table class="table table-bordered table-striped" id="data">
+
+  </table>
+  </div>
+  </div>
+
+  <div id="show"></div>
+  <script>
+        var objId = "<%=_id%>";
+    var content = document.getElementById("data");
+   
+      var ourRequest = new XMLHttpRequest();
+      ourRequest.open('GET', '/admin/result/AllStepsResults/getOneStep/getOneStepItem/' +objId   );
+      ourRequest.onload = function() {
+        if (ourRequest.status >= 200 && ourRequest.status < 400) {
+          var ourData = JSON.parse(ourRequest.responseText);
+          renderHTML(ourData);
+        } else {
+          console.log("error");
+        }
+      };
+    
+      ourRequest.onerror = function() {
+        console.log("Connection error");
+      };
+    
+      ourRequest.send();
+  
+    function renderHTML(data) {
+      var htmlString = "";
+    
+      for (i = 0; i < data[0].stepResults.length; i++) {
+          
+        for(j=0; j < data[0].stepResults[i].stepItemResults.length; j++){
+         
+
+          htmlString += "<tr>" + "<th>" + "UserId" + "</th>" + "<th>" + "type" + "</th>" + "<th>" + "variableName " + "</th>" + "<th>" + "startDate " + "</th>" + "<th>" + "endDate " + "</th>" + "<th>" + "origin " + "</th>" + "<th>" + "value " + "</th>" + "</tr>" + "<tr>" + "<td>" + data[0].userId + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].type + "</td>"  + "<td>" + data[0].stepResults[i].stepItemResults[j].variableName + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].startDate + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].endDate + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].origin + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].value + "</td>"  ;
+
+
+        if(data[0].stepResults[i].stepItemResults[j].type==='LocationResult' ){
+          htmlString += "<td>" +` "<a href='/admin/result/AllStepsResults/AllStepsItemResults/AllCoordinate/${objId}' class='btn btn-primary btn-lg'>"` + "Coordinate"  + "</a>" +"</td>"  
+        } else if(data[0].stepResults[i].stepItemResults[j].type==='ImageResult'){
+          htmlString +=  "<td>" + `"<img style="width:150px;height:140px;" src="data:image/png;base64,${data[0].stepResults[i].stepItemResults[j].image}">"` + "</img>"  + "</td>" + "</tr>" ;
+        }
+         
+        htmlString += '</p>';
+    }
+  }
+      content.insertAdjacentHTML('beforeend', htmlString);
+    }
+    
+    </script>
+
+
+<!--   
+if(data[0].stepResults[i].stepItemResults[j].type==='LocationResult'){
+  htmlString += "<tr>" + "<th>" + "UserId" + "</th>" + "<th>" + "type" + "</th>"  + "<th>" + "variableName " + "</th>" + "<th>" + "startDate " + "</th>" + "<th>" + "endDate " + "</th>" + "<th>" + "origin " + "</th>" + "<th>" + "value " + "</th>" + "<th>" + "Coordinate " + "</th>" + "</tr>" + "<tr>" + "<td>" + data[0].userId + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].type + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].variableName + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].startDate + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].endDate + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].origin + "</td>" +  "<td>" + data[0].stepResults[i].stepItemResults[j].value + "</td>"  + "<td>" +` "<a href='/admin/result/AllStepsResults/AllStepsItemResults/AllCoordinate/${objId}' class='btn btn-primary btn-lg'>"` + "Coordinate"  + "</a>" +"</td>"  + "</tr>" ;
+} else if(data[0].stepResults[i].stepItemResults[j].type==='ImageResult'){
+  htmlString += "<tr>" + "<th>" + "UserId" + "</th>" + "<th>" + "type" + "</th>" + "<th>" + "variableName " + "</th>" + "<th>" + "startDate " + "</th>" + "<th>" + "endDate " + "</th>" + "<th>" + "origin " + "</th>" + "<th>" + "value " + "</th>" + "<th>" + "Image " + "</th>" + "</tr>" + "<tr>" + "<td>" + data[0].userId + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].type + "</td>"  + "<td>" + data[0].stepResults[i].stepItemResults[j].variableName + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].startDate + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].endDate + "</td>" + "<td>" + data[0].stepResults[i].stepItemResults[j].origin + "</td>" +  "<td>" + data[0].stepResults[i].stepItemResults[j].value + "</td>" +   "<td>" + `"<img style="width:150px;height:140px;" src="data:image/png;base64,${data[0].stepResults[i].stepItemResults[j].image}">"` + "</img>"  + "</td>" + "</tr>" ;
+}
+  -->

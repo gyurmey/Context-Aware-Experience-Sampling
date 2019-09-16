@@ -1,0 +1,56 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "ImageChoiceQuestionStep1"},
+
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },
+
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["ImageChoiceAnswerFormat"]
+
+
+     },
+    "imageChoices": {
+        "type": "array",
+        "description":"An array of ORKImageChoice objects that represent the available choices.",
+        "items": {
+          "anyOf": [
+            {"type": "object", "title": "image", "properties":{"file":{ "type": "string", "format": "file", "media": {
+              "binaryEncoding": "base64", "type": "image/png"}}, "value":{"type": "string"}}}
+          ]
+        }
+
+    },
+    "feedbackChartType": {
+        "type": "string",
+        "enum": ["None", "ImageBar", "Bar"],
+        "description": "The kind of chart which will be send as feedback to the user"
+    }
+  }
+}

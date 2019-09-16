@@ -1,0 +1,41 @@
+{
+    
+    "properties":{
+        "countMax": {
+            "type": "number"
+        },
+        "countMaxPerDay": {
+            "type": "number"},
+
+        "validForSeconds": {
+            "type": "number"},
+    
+        "timeFromHour": {
+            "type": "number"},
+
+        "timeToHour": {
+            "type": "number"},
+        "timeUserCanSet": {
+            "type": "array",
+            "format": "tabs",
+            "items": {
+                "oneOf": [
+                    {"title": "weekdays"},
+                    {"title": "weekends"},
+                    {"title": "all days"}
+                ]
+            }
+        },
+        "randomised": {
+            "type": "object",
+            "properties": {
+            "withinMinutes": {
+                "type": "number"},
+            "minDistanceMinutes": {
+                "type": "number"}
+            }
+
+    }
+
+}
+}

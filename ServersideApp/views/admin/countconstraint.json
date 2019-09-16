@@ -1,0 +1,16 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["count"]
+        },
+        
+        "countMax": {
+            "type": "number"
+        },
+        "countMaxPerDay": {
+            "type": "number"
+        }
+    }
+
+}

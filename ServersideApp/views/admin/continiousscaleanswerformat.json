@@ -1,0 +1,101 @@
+{
+    "$ref": "answerformat.json",
+    "properties": {
+      "identifier": {
+        "id": "identifier",
+        "type": "string",
+        "default": "ContiniousScaleQuestionStep1"},
+
+      "type": {
+        "type": "string",
+        "enum": ["QuestionStep"]
+  },
+
+     "title": {
+         "type": "string",
+         "format": "text",
+         "description": "The question you want to ask",
+         "minLength": 4,
+         "default": "Type in your question..."
+     },
+     "text": {
+         "type": "string",
+         "format": "text",
+         "description": "Short description for your question."
+     },
+     "optional": {
+     "type": "boolean"
+     },
+
+     "answerFormat":  {
+         "title": "answerFormat",
+         "type": "string",
+         "enum": ["ContinuousScaleAnswerFormat"]
+
+
+       },
+      "maximum": {
+          "type": "number",
+          "description": "The upper bound of the scale."
+        },
+      "minimum": {
+        "type": "number",
+        "description": "The lower bound of the scale."
+
+      },
+      "defaultValue": {
+        "type": "number",
+        "description": "The default value for the slider."
+      },
+      "maximumFractionDigits": {
+        "type": "string",
+        "template": "undefined",
+        "description":"The maximum number of fractional digits to display."
+      },
+      "vertical": {
+          "type": "boolean",
+          "description":" A Boolean value indicating whether the scale is oriented vertically."
+        },
+      "numberStyle": {
+          "type": "string",
+          "template": "undefined",
+          "description":"A formatting style applied to the minimum, maximum, and slider values"
+        },
+      "numberFormatter": {
+          "type": "string",
+          "template": "undefined",
+          "description":"A number formatter applied to the minimum, maximum, and slider values."
+        },
+      "maximumValueDescription": {
+        "type": "string",
+        "description":"A localized label to describe the maximum value of the scale."
+      },
+      "minimumValueDescription": {
+        "type": "string",
+        "description":"A localized label to describe the minimum value of the scale."
+      },
+      "maximumImage": {
+        "type": "string",
+        "template": "undefined",
+        "description":"An image for the upper bound of the slider."
+      },
+      "minimumImage": {
+          "type": "string",
+          "template": "undefined",
+          "descripiton":" An image for the lower bound of the slider."
+        },
+      "gradientColors": {
+          "type": "array",
+          "description": "The colors to use when drawing a color gradient above the slider. Colors are drawn such that lower indexes correspond to the minimum side of the scale, while colors at higher indexes in the array corresond to the maximum side of the scale."
+        },
+      "gradientLocation": {
+        "type": "array"
+
+	},
+    "feedbackChartType": {
+        "type": "string",
+        "enum": ["None", "Bar", "Line"],
+        "description": "The kind of chart which will be send as feedback to the user"
+    }
+    }
+}

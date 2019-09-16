@@ -1,0 +1,1341 @@
+<% include admin/parts/format.ejs %>
+<script src="./js/jquery.timepicker.js"></script>
+
+<body>
+
+  <% include admin/parts/link.ejs %>
+  <style>
+    .btn {
+      margin-left: 0
+    }
+
+    label {
+      position: relative;
+      display: inline-block;
+    }
+
+    label .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    label .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+
+    label:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .ui-accordion .ui-accordion-content {
+      overflow: visible;
+    }
+  </style>
+  <div class="container">
+    <div class='row'>
+      <h1 style='margin-left:2% '>Create Study</h1>
+      <button stype="button" class="btn btn-success" id="saveStudy"
+        style="margin-left: 78.4%;min-width:15%;position:absolute">Save</button>
+    </div>
+    <li class='list-group-item' id="item">
+      <div class='row'>
+        <div class='col-md-8'>
+          <form id="form">
+            <div class="form-group">
+              <label for="studyName tooltip">Name <span class="tooltiptext">A short readable string that identifies the
+                  study.</span></label></br>
+              <input type="text" class="form-control" id="studyName"> </br>
+
+              <label for="studyDescription">Description <span class="tooltiptext">A readable string that describes the
+                  study.</span></label></br>
+              <input type="text" class="form-control" id="studyDescription"> </br>
+
+              <label>Minimum Study Duration per Person (Days) <span class="tooltiptext">The name of the trigger this
+                  task is
+                  triggered by.</span></label></br>
+              <input type="number" class="form-control" id="minStudyDur"> </br>
+
+              <label>Maximum Study Duration per Person (Days)</label></br>
+              <input type="number" class="form-control" id="maxStudyDur"></br>
+
+              <label for="userSetsStartDate">User sets start date</label></br>
+              <select class="form-control" id="userSetsStartDate">
+                <option selected>true</option>
+                <option>false</option>
+              </select></br>
+
+              <label for="userSetsTimeRestrictions"> User sets time restrictions</label></br>
+              <select class="form-control" id="userSetsTimeRestrictions">
+                <option selected>true</option>
+                <option>false</option>
+              </select></br>
+
+              <label for="isPublic">Study should be public</label></br>
+              <select class="form-control" id="isPublic">
+                <option selected>true</option>
+                <option>false</option>
+              </select></br>
+
+              <label> Earliest Begin of Data Gathering </label></br>
+              <input type="text" class="form-content" id="earliestBegin" /><br>
+              <label for="latestBeginOfDataGathering"> Latest Begin of Data Gathering </label></br>
+              <input type="text" class="form-content" id="latestBegin" /><br>
+              <label> Default starting time </label></br>
+              <input type="text" class="form-control" id="fromHour"></br>
+              <label> Default ending time </label></br>
+              <input type="text" class="form-control" id="toHour"></br>
+              <label for="notifValidSec">Notification Validity (Seconds)</label>
+              <input type="number" class="form-control" id="notifValidSec"></br>
+
+              <label>Prompting with Interval</label></br>
+              <select class="form-control" id="promptingWithInterval">
+                <option selected>true</option>
+                <option>false</option>
+              </select></br>
+
+              <label>Prompting Interval (Seconds) </label></br>
+              <input type="number" class="form-control" id="promptingIntervalSec"></br>
+
+              <label>Repeating a Prompt</label></br>
+              <select class="form-control" id="repeatingAPrompt">
+                <option selected>true</option>
+                <option>false</option>
+              </select></br>
+
+              <label>Repeat Delay (Seconds)</label></br>
+              <input type="number" class="form-control" id="repeatDelaySeconds"></br>
+
+              <p><button class="btn btn-outline-primary" type="button" id='addTask'>Add Task</button>
+                <button class="btn btn-outline-danger deleteData" type="button">Delete All Task</button></p>
+
+              <div class="taskAccordion">
+                <h3>Task 1<span class='glyphicon glyphicon-trash' style='
+                      right: 1%;
+                      position: absolute;
+                      top: 25%;
+                  '></span></h3>
+                <div>
+                  <label for='taskName'>Name <span class="tooltiptext">A short readable string that identifies the
+                      task.</span></label></br>
+                  <input type='text' class='form-control' id='taskName1'></br>
+                  <label for='personalData'>Personal data <span class="tooltiptext">Whether the survey contains the
+                      personal data of the participant needed for demographicals statistics</span></label></br>
+                  <select class='form-control' id='taskPersonalData1'>
+                    <option selected>true</option>
+                    <option>false</option>
+                  </select></br>
+                  <label for="taskTrigger">Trigger <span class="tooltiptext">Add the id of the trigger which describes
+                      how to schedule the survey</span></label></br>
+                  <input type="text" class="form-control" id="taskTrigger1"></br>
+
+                  <p><button class="btn btn-outline-primary addStep" type="button">Add Step</button>
+                    <button class="btn btn-outline-danger deleteData" type="button">Delete All Step</button></p>
+
+                  <!-- </br><h4>Steps</h4> -->
+                  <div class="stepAccordion">
+                    <h3>Step 1<span class='glyphicon glyphicon-trash' style='
+                      right: 1%;
+                      position: absolute;
+                      top: 25%;
+                  '></span></h3>
+                    <div>
+                      <label for='stepName'>Name <span class="tooltiptext">A short string describing the
+                          step.</span></label><br>
+                      <input type='text' class='form-control' id='stepName1s1'><br>
+                      <p><button class='btn btn-outline-primary addStepItem' type='button'>Add Step Item</button>
+                        <button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>
+                      <div class='stepItemAccordion'>
+                        <h3 class='stepCount'>Step Item 1<span class='glyphicon glyphicon-trash' style='
+                        right: 1%;
+                        position: absolute;
+                        top: 25%;
+                        '></span></h3>
+                        <div>
+                          <label for='variableName'>Variable Name <span class="tooltiptext">A short string that uniquely
+                              identifies the stepitem.</span></label></br>
+                          <input type='text' class='form-control' id='stepItemVariableName1s1i1'></br>
+                          <label for='variableLabel'>Variable Label <span class="tooltiptext">A short string that
+                              uniquely identifies the stepitem.</span></label></br>
+                          <input type='text' class='form-control' id='stepItemVariableLabel1s1i1'></br>
+                          <label for='optional'>Optional</label></br>
+                          <select class='form-control' id='stepItemOptional1s1i1'>
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                          </br>
+                          <label for='confidential'>Confidential</label></br>
+                          <select class='form-control' id='stepItemConfidential1s1i1'>
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                          </br>
+                          <label for='confidential'>Data Format</label></br>
+                          <select class='form-control dataFormat' id='stepItemDataFormat1s1i1'>
+                            <option selected>Instruction</option>
+                            <option>Image</option>
+                            <option>Video</option>
+                            <option>Audio</option>
+                            <option>Date</option>
+                            <option>Email</option>
+                            <option>Numeric</option>
+                            <option>Location</option>
+                            <option>Text</option>
+                            <option>DiscreteScale</option>
+                            <option>ContinuousScale</option>
+                            <option>TimeOfDay</option>
+                            <option>ImageChoice</option>
+                            <option>TextChoice</option>
+                            <option>Activity</option>
+                            <option>Light</option>
+                            <option>Screen</option>
+                            <option>Accelerometer</option>
+                            <option>Temperature</option>
+                            <option>PhoneCall</option>
+                            <option>Proximity</option>
+                            <option>Heartrate</option>
+                            <option>Battery</option>
+                            <option>Calendar</option>
+                            <option>Notification</option>
+                            <option>Humidity</option>
+                            <option>Microphone</option>
+                          </select>
+                          </br>
+                          <div class='dataType'>
+                            <label for='stepItemTitle'>Title <span class="tooltiptext">The question you want to
+                                ask.</span></label></br>
+                            <input type='text' class='form-control dfTitle'></br>
+                            <label for='stepItemText'>Text <span class="tooltiptext">Short description for your question
+                                (optional).</span></label></br>
+                            <input type='text' class='form-control dfText'></br>
+                            <label for='detailText'>Detail Text <span class="tooltiptext">Additional detailed
+                                explanation for the instruction.</span></label></br>
+                            <input type='text' class='form-control dfDText'></br>
+                            <label for='image'>Image <span class="tooltiptext">An optional image that provides visual
+                                context for the instruction.</span></label></br>
+                            <input type='file' class='form-control dfImage'>
+                            <p class="b64" hidden></p> </br>
+                            </br>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+
+              <p><button class="btn btn-outline-primary" type="button" id='addTrigger'>Add Trigger</button>
+                <button class="btn btn-outline-danger deleteData" type="button">Delete All Trigger</button></p>
+
+              <div class="triggerAccordion">
+                <h3>Trigger 1<span class='glyphicon glyphicon-trash' style='
+                right: 1%;
+                position: absolute;
+                top: 25%;
+            '></span></h3>
+                <div>
+                  <label>Trigger Name</label></br>
+                  <input type="text" class="form-control" id="triggerName1"></br>
+                  <label>Minimum Time Between Surveys</label></br>
+                  <input type="number" class="form-control" id="triggerMinTime1"></br>
+                  <label>Max Count per Day</label></br>
+                  <input type="number" class="form-control" id="triggerMaxCount1"></br>
+                  <label>Triggered By <span class="tooltiptext">Trigger Id of another trigger starting this trigger
+                      (optional).</span></label></br>
+                  <input type="text" class="form-control" id="triggerTriggeredBy1"></br>
+                  <label>Loop</label></br>
+                  <select class="form-control triggerLoop" id="triggerLoop1">
+                    <option selected>ActivityLoop</option>
+                    <option>LocationLoop</option>
+                    <option>AccelerometerLoop</option>
+                    <option>TemperatureLoop</option>
+                    <option>PhoneCallLoop</option>
+                    <option>ProximityLoop</option>
+                    <option>HeartRateLoop</option>
+                    <option>BatteryLoop</option>
+                    <option>CalenderLoop</option>
+                    <option>NotificationLoop</option>
+                    <option>TimeIntervalLoop</option>
+                    <option>TimeRandomizedLoop</option>
+                    <option>TimeAtEnd</option>
+                    <option>TimeAtStart</option>
+                    <option>TimeAtDate</option>
+                    <option>TimeDailyLoop</option>
+                  </select></br>
+                  <div class='loopFields'>
+                    <label>Sensor Type <span class="tooltiptext">A string defining the Sensor
+                        type.</span></label></br><input type="text" class="form-control loopSensorType"></br>
+                    <label>Sensor Value <span class="tooltiptext">A string defining the semantic meaning of the location
+                        (e.g., Home, Work).</span></label></br><input type="text"
+                      class="form-control loopSensorValue"></br>
+                    <label>PromptOn <span class="tooltiptext">A string defining the semantic meaning of the location
+                        (e.g., Home, Work).</span></label></br><input type="text"
+                      class="form-control loopPromptOn"></br>
+                  </div>
+
+
+                  <p><button class="btn btn-outline-primary addConstraint" type="button">Add Constraint</button>
+                    <button class="btn btn-outline-danger deleteData" type="button">Delete All Constraint</button></p>
+
+                  <div class="constraintAccordion">
+                    <h3>Constraint 1<span class='glyphicon glyphicon-trash' style='
+                      right: 1%;
+                      position: absolute;
+                      top: 25%;
+                  '></span></h3>
+                    <div>
+                      <label for="constraintType">Constraint</label></br>
+                      <select class="form-control constraint" id="constraintTypet1c1">
+                        <option selected>ActivityConstraint</option>
+                        <option>LocationConstraint</option>
+                        <option>AccelerometerConstraint</option>
+                        <option>TemperatureConstraint</option>
+                        <option>PhoneCallConstraint</option>
+                        <option>ProximityConstraint</option>
+                        <option>HeartRateConstraint</option>
+                        <option>BatteryConstraint</option>
+                        <option>CalenderConstraint</option>
+                        <option>NotificationConstraint</option>
+                        <option>LocalTimeConstraint</option>
+                      </select></br>
+                      <div class='constraintFields'>
+                        <label>Sensor Type <span class="tooltiptext">A string defining the Sensor
+                            type.</span></label></br><input type="text" class="form-control constraintSensorType"></br>
+                        <label>Sensor Value <span class="tooltiptext">A string defining the semantic meaning of the
+                            location (e.g., Home, Work).</span></label></br><input type="text"
+                          class="form-control constraintSensorValue"></br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <label for="enableInformedConsent">Enable Informed Consent</label> </br>
+              <select class="form-control" id="enableInformedConsent">
+                <option selected>true</option>
+                <option>false</option>
+              </select>
+              </br>
+              <p><button class="btn btn-outline-primary addConsent" type="button" id='addConsent'>Add Consent</button>
+                <button class="btn btn-outline-danger deleteData" type="button">Delete All</button></p>
+              <div class="consentAccordion">
+                <h3>Informed Consent 1<span class='glyphicon glyphicon-trash' style='
+                  right: 1%;
+                  position: absolute;
+                  top: 25%;
+              '></span></h3>
+                <div>
+                  <label for="confidential">Consent Type</label></br>
+                  <select class="form-control" id="consentType1">
+                    <option value="overview" selected>Overview</option>
+                    <option value="dataGathering">Data Gathering</option>
+                    <option value="privacy">Privacy</option>
+                    <option value="dataUse">Data Use</option>
+                    <option value="timeCommitment">Time Commitment</option>
+                    <option value="studySurvey">Study Survey</option>
+                    <option value="studyTasks">Study Tasks</option>
+                    <option value="withdrawing">Withdrawing</option>
+                  </select> </br>
+                  <label for="valueConsent">Value </label> </br>
+                  <input type="text" class="form-control" id="valueConsent1"> </br>
+                </div>
+              </div>
+          </form>
+        </div>
+      </div>
+    </li>
+  </div>
+  <script>
+
+    var taskCount;
+    var triggerCount;
+
+
+    $(document).ready(function () {
+      $(".taskAccordion,.stepAccordion,.triggerAccordion,.constraintAccordion,.stepItemAccordion,.consentAccordion,.scaleItemAccordion,.imageChoicesAccordion,.textChoiceAccordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+      });
+      $("#startDate, #earliestBegin, #latestBegin").datepicker({
+        "dateFormat": "yy-mm-dd"
+      });
+      $('#fromHour, #toHour').timepicker({ timeFormat: 'H', interval: 60 });
+    });
+
+    $(document).on('click', '.addStep', function () {
+      var stepCount = $(this).parent().siblings('.stepAccordion').children('h3').last().text().split(" ").pop();
+      if (stepCount == undefined) {
+        stepCount = 1;
+      }
+      else {
+        stepCount++;
+      }
+      taskCount = $(this).parents('.ui-accordion-content').prev('h3').text().split(" ").pop();
+      $(this).parent().siblings('.stepAccordion').append('<h3>Step ' + stepCount + '<span class="glyphicon glyphicon-trash" style="' +
+        'right: 1%;' +
+        'position: absolute;' +
+        'top: 25%;' +
+        '"></span></h3>' +
+        '<div>' +
+        // "<label for='stepIdentifier'>Identifier<span class='tooltiptext'>A unique system-created string identifiing the step.</span></label><br>" +
+        // "<input type='text' class='form-control' id='stepIdentifier"+ taskCount + stepCount + "'><br>" +
+        "<label for='stepName'>Name<span class='tooltiptext'>A short string describing the step.</span></label><br>" +
+        "<input type='text' class='form-control' id='stepName" + taskCount + "s" + stepCount + "'><br>" +
+        "<p><button class='btn btn-outline-primary addStepItem' type='button'>Add StepItem</button>" +
+        "<button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>" +
+        "<div class='stepItemAccordion'>" +
+        "</div>" +
+        '</div>');
+
+      $(this).parent().siblings('.stepAccordion').accordion({
+        collapsible: true,
+        heightStyle: "content"
+      });
+      $(this).parent().siblings('.stepAccordion').accordion("refresh");
+      $(this).parent().siblings('.stepAccordion').children('h3').last().click();
+    });
+
+    $(document).on('click', '.addConstraint', function () {
+      var constraintCount = $(this).parent().siblings('.constraintAccordion').children('h3').last().text().split(" ").pop();
+      if (constraintCount == undefined) {
+        constraintCount = 1;
+      }
+      else {
+        constraintCount++;
+      }
+      triggerCount = $(this).parents('.ui-accordion-content').prev('h3').text().split(" ").pop();
+      $(this).parent().siblings('.constraintAccordion').append('<h3>Constraint ' + constraintCount + '<span class="glyphicon glyphicon-trash" style="' +
+        'right: 1%;' +
+        'position: absolute;' +
+        'top: 25%;' +
+        '"></span></h3>' +
+        '<div>' +
+        '<label for="constraintType">Constraint</label></br>' +
+        '<select class="form-control constraint" id="constraintTypet' + triggerCount + "c" + constraintCount + '">' +
+        '<option selected>ActivityConstraint</option>' +
+        '<option>LocationConstraint</option>' +
+        '<option>AccelerometerConstraint</option>' +
+        '<option>TemperatureConstraint</option>' +
+        '<option>PhoneCallConstraint</option>' +
+        '<option>ProximityConstraint</option>' +
+        '<option>HeartRateConstraint</option>' +
+        '<option>BatteryConstraint</option>' +
+        '<option>CalenderConstraint</option>' +
+        '<option>NotificationConstraint</option>' +
+        '<option>LocalTimeConstraint</option>' +
+        '</select></br>' +
+        '<div class="constraintFields">' +
+        '<label>Sensor Type <span class="tooltiptext">A string defining the Sensor type.</span></label></br><input type="text" class="form-control constraintSensorType"></br>' +
+        '<label>Sensor Value <span class="tooltiptext">A string defining the semantic meaning of the location (e.g., Home, Work).</span></label></br><input type="text"' +
+        'class="form-control constraintSensorValue"></br>' +
+        '</div>' +
+        '</div>');
+
+      $(this).parent().siblings('.constraintAccordion').accordion({
+        collapsible: true,
+        heightStyle: "content",
+      });
+
+      $(this).parent().siblings('.constraintAccordion').accordion("refresh");
+      $(this).parent().siblings('.constraintAccordion').children('h3').last().click();
+    });
+
+
+    $(document).on('click', '#addTask', function () {
+      taskCount = $(this).parent().siblings('.taskAccordion').children('h3').last().text().split(" ").pop();
+      taskCount++;
+      $(this).parent().siblings('.taskAccordion').append('<h3>Task ' + taskCount + '<span class="glyphicon glyphicon-trash" style="' +
+        'right: 1%;' +
+        'position: absolute;' +
+        'top: 25%"></span></h3><div>' +
+        '<label>Name <span class="tooltiptext">A short readable string that identifies the task.</span></label></br>' +
+        '<input type="text" class="form-control" id="taskName' + taskCount + '"></br>' +
+        "<label>Personal data <span class='tooltiptext'>Whether the survey contains the personal data of the participant needed for demographicals statistics</span></label></br>" +
+        "<select class='form-control' id='taskPersonalData" + taskCount + "'>" +
+        "<option selected>true</option>" +
+        "<option>false</option>" +
+        "</select>" +
+        "</br>" +
+        '<label>Trigger <span class="tooltiptext">Add the id of the trigger which describes how to schedule the survey</span></label></br>' +
+        '<input type="text" class="form-control" id="taskTrigger' + taskCount + '"></br>' +
+        '<p><button class="btn btn-outline-primary addStep" type="button">Add Step</button>' +
+        '<button class="btn btn-outline-danger deleteData" type="button">Delete All Step</button>' +
+        '</p>' +
+        '<div class="stepAccordion">' +
+        '</div>' +
+        '</div>');
+      $(this).parent().siblings('.taskAccordion').accordion("refresh");
+      $(this).parent().siblings('.taskAccordion').children('h3').last().click();
+      $(this).parent().siblings('.taskAccordion').children('.ui-accordion-content').last().find('.addStep').click();
+      $(this).parent().siblings('.taskAccordion').children('.ui-accordion-content').last().find('.stepAccordion .addStepItem').click();
+    });
+
+    $(document).on('click', '#addTrigger', function () {
+      triggerCount = $(this).parent().siblings('.triggerAccordion').children('h3').last().text().split(" ").pop();
+      triggerCount++;
+      $(this).parent().siblings('.triggerAccordion').append('<h3>Trigger ' + triggerCount + '<span class="glyphicon glyphicon-trash" style="' +
+        'right: 1%;' +
+        'position: absolute;' +
+        'top: 25%;' +
+        '"></span></h3>' +
+        '<div>' +
+        '<label>Trigger Name</label></br>' +
+        '<input type="text" class="form-control" id="triggerName' + triggerCount + '"></br>' +
+        '<label>Minimum Time Between Surveys</label></br>' +
+        '<input type="number" class="form-control" id="triggerMinTime' + triggerCount + '"></br>' +
+        '<label>Max Count per Day</label></br>' +
+        '<input type="number" class="form-control" id="triggerMaxCount' + triggerCount + '"></br>' +
+        '<label>Triggered By <span class="tooltiptext">Trigger Id of another trigger starting this trigger (optional).</span></label></br>' +
+        '<input type="text" class="form-control" id="triggerTriggeredBy' + triggerCount + '"></br>' +
+        '<label>Loop</label></br>' +
+        '<select class="form-control" id="triggerLoop' + triggerCount + '">' +
+        '<option selected>ActivityLoop</option>' +
+        '<option>LocationLoop</option>' +
+        '<option>AccelerometerLoop</option>' +
+        '<option>TemperatureLoop</option>' +
+        '<option>PhoneCallLoop</option>' +
+        '<option>ProximityLoop</option>' +
+        '<option>HeartRateLoop</option>' +
+        '<option>BatteryLoop</option>' +
+        '<option>CalenderLoop</option>' +
+        '<option>NotificationLoop</option>' +
+        '<option>TimeIntervalLoop</option>' +
+        '<option>TimeRandomized Loop</option>' +
+        '<option>TimeAtEnd</option>' +
+        '<option>TimeAtStart</option>' +
+        '<option>TimeAtDate</option>' +
+        '<option>TimeDailyLoop</option>' +
+        '</select></br>' +
+        '<div class="loopFields">' +
+        '<label>Sensor Type <span class="tooltiptext">A string defining the Sensor type.</span></label></br><input type="text" class="form-control loopSensorType"></br>' +
+        '<label>Sensor Value <span class="tooltiptext">A string defining the semantic meaning of the location (e.g., Home, Work).</span></label></br><input type="text" class="form-control loopSensorValue"></br>' +
+        '<label>PromptOn <span class="tooltiptext">A string defining the semantic meaning of the location (e.g., Home, Work).</span></label></br><input type="text" class="form-control loopPromptOn"></br>' +
+        '</div>' +
+        '<p><button class="btn btn-outline-primary addConstraint" type="button">Add Constraint</button>' +
+        '<button class="btn btn-outline-danger deleteData" type="button">Delete All Constraint</button>' +
+        '</p>' +
+        '<div class="constraintAccordion">' +
+        '</div>' +
+        '</div>');
+      $(this).parent().siblings('.triggerAccordion').accordion("refresh");
+      $(this).parent().siblings('.triggerAccordion').children('h3').last().click();
+      $(this).parent().siblings('.triggerAccordion').children('.ui-accordion-content').last().find('.addConstraint').click();
+
+    });
+
+    $(document).on('click', '.glyphicon-trash', function () {
+      $(this).parents('h3').next('div').remove();
+      $(this).parents('h3').remove();
+    });
+
+    $(document).on('click', '.deleteData', function () {
+      $(this).parents('p').next('div').children().remove();
+    });
+
+    $(document).on('click', '#saveStudy', function () {
+      var mainObject = new Object();
+      mainObject.name = $('#studyName').val();
+      mainObject.description = $('#studyDescription').val();
+      mainObject.earliestBeginOfDataGathering = $('#earliestBegin').val() + " 10:00:00";
+      mainObject.latestBeginOfDataGathering = $('#latestBegin').val() + " 10:00:00";
+      mainObject.maximumStudyDurationPerPerson = parseInt($('#maxStudyDur').val());
+      mainObject.minimumStudyDurationPerPerson = parseInt($('#minStudyDur').val());
+      mainObject.defaultFromHour = parseInt($('#fromHour').val());
+      mainObject.defaultToHour = parseInt($('#toHour').val());
+      mainObject.notifValidSec = parseInt($('#notifValidSec').val());
+      mainObject.userSetsStartDate = eval($('#userSetsStartDate option:selected').val());
+      mainObject.userSetsTimeRestrictions = eval($('#userSetsTimeRestrictions option:selected').val());
+      mainObject.promptingWithInterval = eval($('#promptingWithInterval option:selected').val());
+      mainObject.repeatingAPrompt = eval($('#repeatingAPrompt option:selected').val());
+      mainObject.enableInformedConsent = eval($('#enableInformedConsent option:selected').val());
+      mainObject.promtingIntervalSec = parseInt($('#promptingIntervalSec').val());
+      mainObject.repeatDelaySeconds = parseInt($('#repeatDelaySeconds').val());
+      mainObject.isPublic = eval($('#isPublic option:selected').val());
+      mainObject.isConfirmed = eval($('#userSetsStartDate option:selected').val());
+
+      consentArray = [];
+      var consentCount = $('.consentAccordion').children().length;
+      if (consentCount != 0) {
+        consentCount = consentCount / 2 + 1;
+        for (var con = 1; con < consentCount; con++) {
+          var conObject = new Object();
+          conObject.type = $('#consentType' + con + ' option:selected').val();
+          conObject.value = $('#valueConsent' + con).val();
+          consentArray[con - 1] = conObject;
+        }
+      }
+      mainObject.informedConsent = consentArray;
+
+      var taskArray = [];
+      var count = $('.taskAccordion').children().length;
+      if (count != 0) {
+        count = count / 2 + 1;
+        for (var task = 1; task < count; task++) {
+          var taskObject = new Object();
+          taskObject.taskName = $('#taskName' + task).val();
+          taskObject.personalData = eval($('#taskPersonalData' + task + ' option:selected').val());
+          taskObject.trigger = $('#taskTrigger' + task).val();
+          var sCount = $('.taskAccordion').children().eq(task * 2 - 1).find('.stepAccordion').children().length;
+          if (sCount != 0) {
+            sCount = sCount / 2 + 1;
+            var stepArray = [];
+            for (var step = 1; step < sCount; step++) {
+              var stepObject = new Object();
+              stepObject.stepName = $('#stepName' + task + 's' + step).val();
+              var siCount = $('#stepName' + task + 's' + step).siblings('.stepItemAccordion').children().length;
+              if (siCount != 0) {
+                siCount = siCount / 2 + 1;
+                var stepItemArray = [];
+                for (var item = 1; item < siCount; item++) {
+                  var stepItemObject = new Object();
+                  var dataFormatObject = new Object();
+                  stepItemObject.variableName = $('#stepItemVariableName' + task + 's' + step + 'i' + item).val();
+                  stepItemObject.variableLabel = $('#stepItemVariableLabel' + task + 's' + step + 'i' + item).val();
+                  stepItemObject.optional = eval($('#stepItemOptional' + task + 's' + step + 'i' + item + ' option:selected').val());
+                  stepItemObject.confidential = eval($('#stepItemConfidential' + task + 's' + step + 'i' + item + ' option:selected').val());
+                  dataFormatObject = dataFormatConstruction(task, step, item);
+                  stepItemObject.dataFormat = dataFormatObject;
+
+                  stepItemArray[item - 1] = stepItemObject;
+                }
+              }
+              stepObject.stepItems = stepItemArray;
+              stepArray[step - 1] = stepObject;
+            }
+          }
+          taskObject.steps = stepArray;
+          taskArray[task - 1] = taskObject;
+        }
+      }
+      mainObject.tasks = taskArray;
+
+      var triggerArray = [];
+      var tcount = $('.triggerAccordion').children().length;
+      if (tcount != 0) {
+        tcount = tcount / 2 + 1;
+        for (var trigger = 1; trigger < tcount; trigger++) {
+          var triggerObject = new Object();
+          triggerObject.triggerName = $('#triggerName' + trigger).val();
+          triggerObject.minTimeBetweenSurveys = parseInt($('#triggerMinTime' + trigger).val());
+          triggerObject.maxCountPerDay = parseInt($('#triggerMaxCount' + trigger).val());
+          triggerObject.triggeredBy = $('#TriggeredBy' + trigger).val();
+          var triggerLoop = new Object();
+          var selected = $('#triggerLoop' + trigger).val();
+          if (selected == 'ActivityLoop' || selected == 'LocationLoop' || selected == 'PhoneCallLoop') {
+            triggerLoop.sensorType = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorType').val();
+            triggerLoop.sensorValue = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorValue').val();
+            triggerLoop.promptOn = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPromptOn').val();
+          }
+          if (selected == 'AccelerometerLoop' || selected == 'BatteryLoop' || selected == 'CalenderLoop') {
+            triggerLoop.sensorType = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorType').val();
+            triggerLoop.sensorValue = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorValue').val();
+            triggerLoop.promptOn = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPromptOn').val();
+            triggerLoop.sensingIntervalSec = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensingSec').val());
+          }
+          if (selected == 'TemperatureLoop') {
+            triggerLoop.sensorType = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorType').val();
+            triggerLoop.sensorValue = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorValue').val();
+            triggerLoop.promptOn = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPromptOn').val();
+            triggerLoop.sensingIntervalSec = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensingSec').val());
+            triggerLoop.thresholdHigh = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopThresholdHigh').val());
+            triggerLoop.thresholdLow = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopThresholdLow').val());
+          }
+          if (selected == 'ProximityLoop') {
+            triggerLoop.sensorType = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorType').val();
+            triggerLoop.sensorValue = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorValue').val();
+            triggerLoop.promptOn = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPromptOn').val();
+            triggerLoop.sensingIntervalSec = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensingSec').val());
+            triggerLoop.distanceThreshold = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopDistanceThreshold').val());
+          }
+          if (selected == 'HeartRateLoop') {
+            triggerLoop.sensorType = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorType').val();
+            triggerLoop.sensorValue = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorValue').val();
+            triggerLoop.promptOn = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPromptOn').val();
+            triggerLoop.thresholdHigh = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopThresholdHigh').val());
+            triggerLoop.thresholdLow = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopThresholdLow').val());
+          }
+          if (selected == 'NotificationLoop') {
+            triggerLoop.sensorType = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorType').val();
+            triggerLoop.sensorValue = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorValue').val();
+            triggerLoop.promptOn = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPromptOn').val();
+            triggerLoop.sensorAttribute = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopSensorAttribute').val();
+          }
+          if (selected == 'TimeIntervalLoop') {
+            triggerLoop.intervalMinutes = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopIntervalMinutes').val());
+          }
+          if (selected == 'TimeRandomizedLoop') {
+            triggerLoop.intervalMinutes = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopIntervalMinutes').val());
+            triggerLoop.plusMinusMInutes = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopPlusMinusMinutes').val());
+          }
+          // if (selected == 'Time At End' || selected == 'Time At Start') {
+          //   $(this).siblings('.loopFields').append();
+          // }
+          if (selected == 'TimeAtDate') {
+            triggerLoop.required = eval($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopRequired option:selected').val());
+            triggerLoop.date = $('#triggerLoop' + trigger).siblings('.loopFields').find('.loopDate').val();
+          }
+          if (selected == 'TimeDailyLoop') {
+            triggerLoop.required = eval($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopRequired option:selected').val());
+            triggerLoop.hour = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopHour').val());
+            triggerLoop.minute = parseInt($('#triggerLoop' + trigger).siblings('.loopFields').find('.loopMinute').val());
+          }
+          triggerLoop.type = $('#triggerLoop' + trigger).val();
+          triggerObject.loop = triggerLoop;
+
+          var cCount = $('.triggerAccordion').children().eq(trigger * 2 - 1).find('.constraintAccordion').children().length;
+          if (cCount != 0) {
+            cCount = cCount / 2 + 1;
+            var constraintArray = [];
+            for (var constraint = 1; constraint < cCount; constraint++) {
+              var constraintObject = new Object();
+              constraintObject.type = $('#constraintTypet' + trigger + 'c' + constraint).val();
+              var selected = $('#constraintTypet' + trigger + 'c' + constraint).val();
+              if (selected == 'ActivityConstraint' || selected == 'LocationConstraint' || selected == 'PhoneCallConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+              }
+              if (selected == 'AccelerometerConstraint' || selected == 'BatteryConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+                constraintObject.promptOn = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintPromptOn").val();
+                constraintObject.sensingIntervalSec = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensingSec").val());
+              }
+              if (selected == 'TemperatureConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+                constraintObject.thresholdHigh = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintThresholdHigh").val());
+                constraintObject.thresholdLow = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintThresholdLow").val());
+                constraintObject.sensingIntervalSec = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensingSec").val());
+              }
+              if (selected == 'CalenderConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+                constraintObject.promptOn = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintPromptOn").val();
+                constraintObject.sensingIntervalSec = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensingSec").val());
+              }
+              if (selected == 'ProximityConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+                constraintObject.distanceThreshold = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintDistanceThreshold").val());
+                constraintObject.sensingIntervalSec = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensingSec").val());
+              }
+              if (selected == 'HeartRateConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+                constraintObject.thresholdHigh = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintThresholdHigh").val());
+                constraintObject.thresholdLow = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintThresholdLow").val());
+              }
+              if (selected == 'NotificationConstraint') {
+                constraintObject.sensorType = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorType").val();
+                constraintObject.sensorValue = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorValue").val();
+                constraintObject.sensorAttribute = $('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintSensorAttribute").val();
+              }
+              if (selected == 'LocalTimeConstraint') {
+                constraintObject.timeFrom = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintTimeFrom").val());
+                constraintObject.timeTo = parseInt($('#constraintTypet' + trigger + 'c' + constraint).siblings(".constraintFields").find(".constraintTimeTo").val());
+              }
+              constraintArray[constraint - 1] = constraintObject;
+            }
+          }
+          triggerObject.constraints = constraintArray;
+          triggerArray[trigger - 1] = triggerObject;
+        }
+      }
+      mainObject.triggers = triggerArray;
+      $.ajax({
+        type: 'POST',
+        data: JSON.stringify(mainObject),
+        url: '/admin/study',
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+          alert(data);
+        },
+        error: function () {
+          alert("Save request unsuccessful");
+        }
+      });
+    });
+
+    function dataFormatConstruction(task, step, item) {
+      var dataFormatObject = new Object();
+      dataFormatObject.type = $('#stepItemDataFormat' + task + 's' + step + 'i' + item + ' option:selected').val();
+      var selected = $('#stepItemDataFormat' + task + 's' + step + 'i' + item + ' option:selected').val();
+      if (selected == 'Instruction') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.detailText = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDText').val();
+        dataFormatObject.image = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.b64').text();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Image') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.templateImage = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.b64').text();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Video') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.Image = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.b64').text();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Audio') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.duration = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfAudioDuration').val());
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Date') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.style = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDataStyle').val();
+        dataFormatObject.defaultdate = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDefaultDate').val();
+        dataFormatObject.minimumdate = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMinimumDate').val();
+        dataFormatObject.maximumdate = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximumDate').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Email') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Numeric') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.style = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDataStyle').val();
+        dataFormatObject.scale = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfScale').val());
+        dataFormatObject.minimum = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMinimum').val());
+        dataFormatObject.maximum = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximum').val());
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Location') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.useCurrentLocation = eval($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfUseCurrentLocation option:selected').val());
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'Text') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.multipleLines = eval($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMultipleLines option:selected').val());
+        dataFormatObject.maximumLength = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximumLength').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'DiscreteScale') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.step = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfStep').val());
+        dataFormatObject.defaultValue = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDefaultValue').val());
+        dataFormatObject.vertical = eval($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfVertical option:selected').val());
+        dataFormatObject.minimum = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMinimum').val());
+        dataFormatObject.maximum = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximum').val());
+        dataFormatObject.minValueDescription = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMinimumValueDes').val();
+        dataFormatObject.maxValueDescription = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximumValueDes').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+        var scaleArray = [];
+        var scaleItems = new Object();
+        scaleItems.label = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTText').val();
+        scaleItems.value = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfIValue').val();
+        scaleArray[0] = scaleItems;
+        dataFormatObject.scaleItems = scaleArray;
+      }
+      if (selected == 'ContinuousScale') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.defaultValue = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDefaultValue').val());
+        dataFormatObject.vertical = eval($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfVertical option:selected').val());
+        dataFormatObject.minimum = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMinimum').val());
+        dataFormatObject.maximum = parseInt($('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximum').val());
+        dataFormatObject.minValueDescription = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMinimumValueDes').val();
+        dataFormatObject.maxValueDescription = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfMaximumValueDes').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+        var scaleArray = [];
+        var scaleItems = new Object();
+        scaleItems.label = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTText').val();
+        scaleItems.value = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfIValue').val();
+        scaleArray[0] = scaleItems;
+        dataFormatObject.scaleItems = scaleArray;
+      }
+      if (selected == 'TimeOfDay') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.defaultTime = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfDefaultTime').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      if (selected == 'ImageChoice') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+        var imageArray = [];
+        var imageItems = new Object();
+        imageItems.file = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.b64').text();
+        imageItems.value = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfIValue').val();
+        imageArray[0] = imageItems;
+        dataFormatObject.imageChoices = imageArray;
+      }
+      if (selected == 'TextChoice') {
+        dataFormatObject.title = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTitle').val();
+        dataFormatObject.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfText').val();
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+        var textArray = [];
+        var textItems = new Object();
+        textItems.text = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfTText').val();
+        textItems.value = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfIValue').val();
+        textArray[0] = textItems;
+        dataFormatObject.textChoices = textArray;
+      }
+      if (selected == 'Light' || selected == 'Screen' || selected == 'Accelerometer' || selected == 'Temperature' || selected == 'Activity' ||
+        selected == 'PhoneCall' || selected == 'Proximity' || selected == 'Battery' || selected == 'Calender' || selected == 'Notification'
+        || selected == 'Microphone' || selected == 'Humidity') {
+        dataFormatObject.resultFormat = $('#stepItemDataFormat' + task + 's' + step + 'i' + item).siblings('.dataType').find('.dfResultFormat option:selected').val();
+      }
+      return dataFormatObject;
+    }
+
+    $(document).on('change', '.triggerLoop', function () {
+      var type = '<label>Type <span class="tooltiptext">A string defining the Loop type.</span></label></br><input type="text" class="form-control loopType"></br>';
+      var sensorType = '<label>Sensor Type <span class="tooltiptext">A string defining the Sensor type.</span></label></br><input type="text" class="form-control loopSensorType"></br>';
+      var sensorValue = '<label>Sensor Value <span class="tooltiptext">A string defining the semantic meaning of the location (e.g., Home, Work).</span></label></br><input type="text" class="form-control loopSensorValue"></br>';
+      var promptOn = '<label>PromptOn <span class="tooltiptext">A string defining the semantic meaning of the location (e.g., Home, Work).</span></label></br><input type="text" class="form-control loopPromptOn"></br>';
+      var sensingIntervalSec = '<label>Sensing Interval Sec <span class="tooltiptext">The interval in seconds between retrieving 2 sensor values</span></label></br><input type="number" class="form-control loopSensingSec"></br>';
+      var thresholdHigh = '<label>Threshold High</label></br><input type="number" class="form-control loopThresholdHigh"></br>';
+      var thresholdLow = '<label>Threshold Low</label></br><input type="number" class="form-control loopThresholdLow"></br>';
+      var distanceThreshold = '<label>Distance Threshold <span class="tooltiptext">The distance in cm.</span></label></br><input type="number" class="form-control loopDistanceThreshold"></br>';
+      var sensorAttribute = '<label>Sensor Attribute <span class="tooltiptext">A string defining the attribute (e.g. the notifiing application/the category).</span></label></br><input type="text" class="form-control loopSensorAttribute"></br>';
+      var intervalMinutes = '<label>Interval in Minutes <span class="tooltiptext">The time interval in minutes.</span></label></br><input type="number" class="form-control loopIntervalMinutes"></br>';
+      var plusMinusMInutes = '<label>Plus Minus Minutes <span class="tooltiptext">The minutes to randomise.</span></label></br><input type="number" class="form-control loopPlusMinusMinutes"></br>';
+      var date = '<label>Date <span class="tooltiptext">The date when a task should be triggered.</span></label></br><input type="text" class="form-control loopDate"/></br>';
+      var required = '<label>Required <span class="tooltiptext">If true, the triggered task is repeated if the phone was off.</span></label></br>' +
+        '<select class="form-control loopRequired">' +
+        '<option selected>true</option>' +
+        '<option>false</option>' +
+        '</select></br>';
+      var hour = '<label>Hour <span class="tooltiptext">The hour of the time the task should be triggered.</span></label></br><input type="number" class="form-control loopHour"></br>';
+      var minute = '<label>Minute <span class="tooltiptext">The minute of the time the task should be triggered.</span></label></br><input type="number" class="form-control loopMinute"></br>';
+
+
+      $(this).siblings('.loopFields').empty();
+
+
+      var selected = $(this).find('option:selected').text();
+      if (selected == 'ActivityLoop' || selected == 'LocationLoop' || selected == 'PhoneCallLoop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorValue + promptOn);
+      }
+      if (selected == 'AccelerometerLoop' || selected == 'BatteryLoop' || selected == 'CalenderLoop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorValue + promptOn + sensingIntervalSec);
+      }
+      if (selected == 'TemperatureLoop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorValue + promptOn + sensingIntervalSec + thresholdHigh + thresholdLow);
+      }
+      if (selected == 'ProximityLoop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorValue + promptOn + sensingIntervalSec + distanceThreshold);
+      }
+      if (selected == 'HeartRateLoop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorValue + promptOn + thresholdHigh + thresholdLow);
+      }
+      if (selected == 'NotificationLoop') {
+        $(this).siblings('.loopFields').append(sensorType + sensorAttribute + sensorValue + promptOn);
+      }
+      if (selected == 'TimeIntervalLoop') {
+        $(this).siblings('.loopFields').append(intervalMinutes);
+      }
+      if (selected == 'TimeRandomizedLoop') {
+        $(this).siblings('.loopFields').append(intervalMinutes + plusMinusMInutes);
+      }
+      if (selected == 'TimeAtEnd' || selected == 'TimeAtStart') {
+        $(this).siblings('.loopFields').append();
+      }
+      if (selected == 'TimeAtDate') {
+        $(this).siblings('.loopFields').append(date + required);
+        $(".loopDate").datepicker({
+          "dateFormat": "yy-mm-dd"
+        });
+      }
+      if (selected == 'TimeDailyLoop') {
+        $(this).siblings('.loopFields').append(hour + minute + required);
+      }
+
+    });
+
+    $(document).on('change', '.constraint', function () {
+      var type = '<label>Type</label></br><input type="text" class="form-control constraintType"></br>';
+      var sensorType = '<label>Sensor Type <span class="tooltiptext">A string defining the Sensor type.</span></label></br><input type="text" class="form-control constraintSensorType"></br>';
+      var sensorValue = '<label>Sensor Value <span class="tooltiptext">A string defining the semantic meaning of the location (e.g., Home, Work).</span></label></br><input type="text" class="form-control constraintSensorValue"></br>';
+      var promptOn = '<label>PromptOn <span class="tooltiptext">Defining whether the trigger should prompt on leaving or entering.</span></label></br><input type="text" class="form-control constraintPromptOn"></br>';
+      var sensingIntervalSec = '<label>Sensing Interval Sec <span class="tooltiptext">The interval in seconds between retrieving 2 sensor values</span></label></br><input type="number" class="form-control constraintSensingSec"></br>';
+      var thresholdHigh = '<label>Threshold High</label></br><input type="number" class="form-control constraintThresholdHigh"></br>';
+      var thresholdLow = '<label>Threshold Low</label></br><input type="number" class="form-control constraintThresholdLow"></br>';
+      var distanceThreshold = '<label>Distance Threshold <span class="tooltiptext">The distance in cm.</span></label></br><input type="number" class="form-control constraintDistanceThreshold"></br>';
+      var sensorAttribute = '<label>Sensor Attribute <span class="tooltiptext">A string defining the attribute (e.g. the notifiing application/the category).</span></label></br><input type="text" class="form-control constraintSensorAttribute"></br>';
+      var timeFrom = '<label>Time From <span class="tooltiptext">The start time for prompting.</span></label></br><input type="number" class="form-control constraintTimeFrom"></br>';
+      var timeTo = '<label>Time To  <span class="tooltiptext">The end time for prompting.</span></label></br><input type="number" class="form-control constraintTimeTo"></br>';
+
+      $(this).siblings('.constraintFields').empty();
+
+
+      var selected = $(this).find('option:selected').text();
+      if (selected == 'ActivityConstraint' || selected == 'LocationConstraint' || selected == 'PhoneCallConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue);
+      }
+      if (selected == 'AccelerometerConstraint' || selected == 'BatteryConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue + promptOn + sensingIntervalSec);
+      }
+      if (selected == 'TemperatureConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue + sensingIntervalSec + thresholdHigh + thresholdLow);
+      }
+      if (selected == 'CalenderConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue + sensingIntervalSec + promptOn);
+      }
+      if (selected == 'ProximityConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue + sensingIntervalSec + distanceThreshold);
+      }
+      if (selected == 'HeartRateConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorValue + thresholdHigh + thresholdLow);
+      }
+      if (selected == 'NotificationConstraint') {
+        $(this).siblings('.constraintFields').append(sensorType + sensorAttribute + sensorValue);
+      }
+      if (selected == 'LocalTimeConstraint') {
+        $(this).siblings('.constraintFields').append(timeFrom + timeTo);
+      }
+
+    });
+
+    $(document).on("click", ".addStepItem", function () {
+      var stepItemCount = $(this).parent().siblings('.stepItemAccordion').children('h3').last().text().split(" ").pop();
+      if (stepItemCount == undefined) {
+        stepItemCount = 1;
+      }
+      else {
+        stepItemCount++;
+      }
+      taskCount = $(this).parents('.ui-accordion-content').eq(1).prev('h3').text().split(" ").pop();
+      stepCount = $(this).parents('.ui-accordion-content').eq(0).prev('h3').text().split(" ").pop();
+      $(this).parent().siblings('.stepItemAccordion').append(
+        "<h3>Step Item " + stepItemCount + "<span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%;" +
+        "position: absolute;" +
+        "top: 25%;" +
+        "'></span></h3>" +
+        "<div>" +
+        "<label for='variableName'>Variable Name <span class='tooltiptext'>A short string that uniquely identifies the stepitem.</span></label></br>" +
+        "<input type='text' class='form-control' id='stepItemVariableName" + taskCount + 's' + stepCount + 'i' + stepItemCount + "'></br>" +
+        "<label for='variableLabel'>Variable Label <span class='tooltiptext'>A short string that uniquely identifies the stepitem.</span></label></br>" +
+        "<input type='text' class='form-control' id='stepItemVariableLabel" + taskCount + 's' + stepCount + 'i' + stepItemCount + "'></br>" +
+        "<label for='optional'>Optional</label></br>" +
+        "<select class='form-control' id='stepItemOptional" + taskCount + 's' + stepCount + 'i' + stepItemCount + "'>" +
+        "<option selected>true</option>" +
+        "<option>false</option>" +
+        "</select>" +
+        "</br>" +
+        "<label for='confidential'>Confidential</label></br>" +
+        "<select class='form-control' id='stepItemConfidential" + taskCount + 's' + stepCount + 'i' + stepItemCount + "'>" +
+        "<option selected>true</option>" +
+        "<option>false</option>" +
+        "</select>" +
+        "</br>" +
+        "<label for='confidential'>Data Format</label></br>" +
+        "<select class='form-control dataFormat' id='stepItemDataFormat" + taskCount + 's' + stepCount + 'i' + stepItemCount + "'>" +
+        "<option selected>Instruction</option>" +
+        "<option>Image</option>" +
+        "<option>Video</option>" +
+        "<option>Audio</option>" +
+        "<option>Date</option>" +
+        "<option>Email</option>" +
+        "<option>Numeric</option>" +
+        "<option>Location</option>" +
+        "<option>Text</option>" +
+        "<option>DiscreteScale</option>" +
+        "<option>ContinuousScale</option>" +
+        "<option>TimeOfDay</option>" +
+        "<option>ImageChoice</option>" +
+        "<option>TextChoice</option>" +
+        "<option>Activity</option>" +
+        "<option>Light</option>" +
+        "<option>Screen</option>" +
+        "<option>Accelerometer</option>" +
+        "<option>Temperature</option>" +
+        "<option>PhoneCall</option>" +
+        "<option>Proximity</option>" +
+        "<option>Heartrate</option>" +
+        "<option>Battery</option>" +
+        "<option>Calendar</option>" +
+        "<option>Notification</option>" +
+        "</select>" +
+        "</br>" +
+        "<div class='dataType'>" +
+        "<label for='stepItemTitle'>Title <span class='tooltiptext'>The question you want to ask</span></label></br>" +
+        "<input type='text' class='form-control dfTitle'></br>" +
+        "<label for='stepItemText'>Text <span class='tooltiptext'>Short description for your question (optional).</span></label></br>" +
+        "<input type='text' class='form-control dfText'></br>" +
+        "<label for='detailText'>Detail Text <span class='tooltiptext'>Additional detailed explanation for the instruction.</span></label></br>" +
+        "<input type='text' class='form-control dfDText'></br>" +
+        "<label for='image'>Image <span class='tooltiptext'>An optional image that provides visual context for the instruction.</span></label></br>" +
+        "<input type='file' class='form-control stepItemImage'><p class='b64' hidden></p></br>" +
+        "</br>" +
+        "</div>" +
+        "</div>");
+      $(this).parent().siblings('.stepItemAccordion').accordion({
+        collapsible: true,
+        heightStyle: "content"
+      });
+      $(this).parent().siblings('.stepItemAccordion').accordion("refresh");
+      $(this).parent().siblings('.stepItemAccordion').children('h3').last().click();
+    });
+
+    $(document).on('change', '#promptingWithInterval', function () {
+      var value = $(this).val();
+      if (value == 'false') {
+        $(this).siblings("#promptingIntervalSec").prop('disabled', true);
+        $(this).siblings("#promptingIntervalSec").val("");
+      } else {
+        $(this).siblings("#promptingIntervalSec").prop('disabled', false);
+      }
+    });
+
+    $(document).on('change', '#enableInformedConsent', function () {
+      var value = $(this).val();
+      if (value == "false") {
+        $(this).siblings('p').children('#addConsent, #deleteData').prop('disabled', true);
+        $(this).siblings('#consentAccordion').children().remove();
+      } else {
+        $(this).siblings('p').children('#addConsent, #deleteData').prop('disabled', false);
+      }
+    });
+
+    $(document).on('change', '#repeatingAPrompt', function () {
+      var value = $('#repeatingAPrompt').val();
+      if (value == 'false') {
+        $(this).siblings("#repeatDelaySeconds").prop('disabled', true);
+        $(this).siblings("#repeatDelaySeconds").val("");
+      } else {
+        $(this).siblings("#repeatDelaySeconds").prop('disabled', false);
+      }
+    });
+
+    $(document).on('change', '.dataFormat', function () {
+      var title = "<label for='stepItemTitle'>Title <span class='tooltiptext'>The question you want to ask.</span></label></br><input type='text' class='form-control dfTitle'>";
+      var text = "<label for='stepItemText'>Text <span class='tooltiptext'>Short description for your question (optional).</span></label></br><input type='text' class='form-control dfText'>";
+      var detailText = "<label for='detailText'>Detail Text <span class='tooltiptext'>Additional detailed explanation for the instruction.</span></label></br> <input type='text' class='form-control dfDText'>";
+      var image = "<label for='image'>Image <span class='tooltiptext'>An optional image that provides visual context for the instruction.</span></label></br><input type='file' class='form-control dfImage'><p class='b64' hidden></p>";
+      var resultFormat = "<label for='resultFormat'>Result Format</label></br><select class='form-control data-target dfResultFormat'>" +
+        "<option selected>Ordinal</option> <option>Nominal</option> <option>Scale </option> </select>";
+      var templateImage = "<label for='image'> Template Image</label></br><input type='file' class='form-control dfTImage'><p class='b64' hidden></p>";
+      var templateVideo = "<label for='image'>Template Video </label></br> <input type='file' class='form-control dfTVideo'><p class='b64' hidden></p>";
+      var audioDuration = "<label for='audioDuration'>Duration </label><input type='number' class='form-control dfAudioDuration'>";
+      var dataStyle = "<label for='dateStyle'>Style</label></br><input type='text' class='form-control dfDataStyle'>";
+      var defaultDate = "<label for='defaultdate'> Default Date  <span class='tooltiptext'>The date to use as the default.</span></label></br><input type='text' class='form-content dfDefaultDate'/><br>";
+      var minimumDate = "<label for='minimumdate'> Minimum Date <span class='tooltiptext'>The minimum allowed date.</span></label></br> <input type='text' class='form-content dfMinimumDate'/><br>";
+      var maximumDate = "<label for='maximumdate'> Maximum Date <span class='tooltiptext'>The maximum allowed date.</span></label></br><input type='text' class='form-content dfMaximumDate'/><br>";
+      var minimum = "<label for='minimum'>Minimum <span class='tooltiptext'>The minimum allowed value for the numeric answer.</span></label><input type='number' class='form-control dfMinimum'>";
+      var maximum = "<label for='maximum'>Maximum <span class='tooltiptext'>The maximum allowed value for the numeric answer.</span></label><input type='number' class='form-control dfMaximum'>";
+      var minValueDescription = "<label for='minimum'>Minimum Value Description<span class='tooltiptext'>A localized label to describe the minimum value of the scale.</span></label><input type='number' class='form-control dfMinimumValueDes'>";
+      var maxValueDescription = "<label for='maximum'>Maximum Value Description<span class='tooltiptext'>A localized label to describe the maximum value of the scale.</span></label><input type='number' class='form-control dfMaximumValueDes'>";
+      var scale = "<label for='scale'>Scale <span class='tooltiptext'>The decimal scale (number of digits to the right of the decimal point) allowed value for the numeric answer.</span></label><input type='number' class='form-control dfScale'>";
+      var location = "<label for='useCurrentLocation'>Use Current Location <span class='tooltiptext'>Indicates whether or not the user’s current location should be automatically entered the first time they tap on the input field.</span></label></br><select class='form-control dfUseCurrentLocation'>" +
+        "<option selected>true</option><option>false</option></br></select>";
+      var maximumLength = "<label for='maximumLength'>Maximum Length <span class='tooltiptext'>The maximum length of the text users can enter.</span></label><input type='number' class='form-control dfMaximumLength'>";
+      var multipleLines = "<label for='multipleLines'>Multiple Lines <span class='tooltiptext'>A Boolean value indicating whether to expect more than one line of input.</span></label></br> <select class='form-control dfMultipleLines'>" +
+        "<option selected>true</option><option>false</option></br></select>";
+      var step = "<label for='step'>Step <span class='tooltiptext'>The size of each discrete offset on the scale.</span></label><input type='number' class='form-control dfStep'>";
+      var defaultValue = "<label for='defaultValue'>Default Value <span class='tooltiptext'>The default value for the slider.</span></label><input type='number' class='form-control dfDefaultValue'>";
+      var vertical = "<label for='vertical'> Vertical <span class='tooltiptext'>A Boolean value indicating whether the scale is oriented vertically.</span></label></br><select class='form-control dfVertical'>" +
+        "<option selected>true</option><option>false</option></br></select></br>";
+      var scaleItemAccordion = "<p><button class='btn btn-outline-primary addScaleItem' type='button'>Add ScaleItem</button> <button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>" +
+        "<div class='scaleItemAccordion'><h3 value='1'class='scaleItemCount'>Scale Item 1 <span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%;position: absolute; top: 25%;'></span></h3> <div>" +
+        "<label for='label'>Label</label></br><input type='text' class='form-control dfTText'>" +
+        "<label for='value'>Value</label></br><input type='text' class='form-control dfIValue'> </div></div>";
+      var defaultTime = "<label for='defaultTime'>Default Time <span class='tooltiptext'>The default time of day to display in the picker (optional).</span></label></br><input type='text' class='form-control dfDefaultTime'>";
+      var textChoiceAccordion = " <p><button class='btn btn-outline-primary addTextChoice' type='button'>Add TextChoice</button><button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>" +
+        "<div class='textChoiceAccordion'><h3 value='1' class='textChoiceCount'>Text Choice 1 <span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%;  position: absolute;  top: 25%; '></span></h3>  <div>    <label for='file'>Text</label></br> " +
+        "<input type='text' class='form-control dfTText'> <label for='value' >Value </label></br>" +
+        "<input type='text' class='form-control dfIValue'> </div></div>";
+      var imageChoicesAccordion = " <p><button class='btn btn-outline-primary addImageChoice' type='button'>Add ImageChoice</button><button class='btn btn-outline-danger deleteData' type='button'>Delete All</button></p>" +
+        "<div class='imageChoicesAccordion'><h3 value='1' class='imageChoicesCount'>Image Choice 1 <span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%; position: absolute; top: 25%;'></span></h3> <div>  <label for='file'>File </label></br>" +
+        "<input type='file' class='form-control dfIFile'><p class='b64' hidden></p><label for='value'>Value </label></br> <input type='text' class='form-control dfIValue'></div></div>";
+      $(this).siblings('.dataType').empty();
+      var selected = $(this).find('option:selected').text();
+      if (selected == 'Instruction') {
+        $(this).siblings('.dataType').append(title + text + detailText + image);
+      }
+      if (selected == 'Image') {
+        $(this).siblings('.dataType').append(title + text + templateImage);
+      }
+      if (selected == 'Video') {
+        $(this).siblings('.dataType').append(title + text + templateVideo);
+      }
+      if (selected == 'Audio') {
+        $(this).siblings('.dataType').append(title + text + audioDuration);
+      }
+      if (selected == 'Date') {
+        $(this).siblings('.dataType').append(title + text + dataStyle + defaultDate + minimumDate + maximumDate);
+        $(".dfDefaultDate, .dfMaximumDate, .dfMinimumDate").datepicker({
+          "dateFormat": "yy-mm-dd"
+        });
+      }
+      if (selected == 'Email') {
+        $(this).siblings('.dataType').append(title + text);
+      }
+      if (selected == 'Numeric') {
+        $(this).siblings('.dataType').append(title + text + dataStyle + minimum + maximum + scale);
+      }
+      if (selected == 'Location') {
+        $(this).siblings('.dataType').append(title + text + location);
+      }
+      if (selected == 'Text') {
+        $(this).siblings('.dataType').append(title + text + maximumLength + multipleLines);
+      }
+      if (selected == 'DiscreteScale') {
+        $(this).siblings('.dataType').append(title + text + maximum + minimum + step + defaultValue + vertical + scaleItemAccordion + resultFormat);
+        $(".scaleItemAccordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+      });
+      }
+      if (selected == 'ContinuousScale') {
+        $(this).siblings('.dataType').append(title + text + maximum + minimum + defaultValue + vertical + scaleItemAccordion);
+        $(".scaleItemAccordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+      });
+      }
+      if (selected == 'TimeOfDay') {
+        $(this).siblings('.dataType').append(title + text + defaultTime);
+        $(".dfDefaultDate").datepicker({
+          "dateFormat": "yy-mm-dd"
+        });
+      }
+      if (selected == 'ImageChoice') {
+        $(this).siblings('.dataType').append(title + text + imageChoicesAccordion + resultFormat);
+        $(".imageChoicesAccordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+      });
+      }
+      if (selected == 'TextChoice') {
+        $(this).siblings('.dataType').append(title + text + dataStyle + textChoiceAccordion + resultFormat);
+        $(".textChoiceAccordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        active: false
+      });
+      }
+
+    });
+
+    $(document).on("click", ".addScaleItem", function () {
+      var scaleItemCount = $(this).parent().siblings('.scaleItemAccordion').children('h3').last().attr("value");
+      if (scaleItemCount == undefined) {
+        scaleItemCount = 1;
+      } else { scaleItemCount++; }
+      $(this).parent().siblings('.scaleItemAccordion').append("<h3 value='" + scaleItemCount + "' class='scaleItemCount'>Scale Item " + scaleItemCount + "<span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%; position: absolute; top: 25%;'></span></h3> <div><label for='label'>Label</label></br><input type='text' class='form-control scaleLabel'>" +
+        "<label for='value'>Value</label></br><input type='text' class='form-control value'> </div></div>");
+        $(this).parent().siblings('.scaleItemAccordion').accordion('refresh');
+    });
+
+    $(document).on("click", ".addImageChoice", function () {
+      var imageChoiceCount = $(this).parent().siblings('.imageChoicesAccordion').children('h3').last().attr("value");
+      if (imageChoiceCount == undefined) {
+        imageChoiceCount = 1;
+      } else { imageChoiceCount++; }
+      $(this).parent().siblings('.imageChoicesAccordion').append("<h3 value='" + imageChoiceCount + "' class='imageChoicesCount'>Image Choice " + imageChoiceCount + " <span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%; position: absolute; top: 25%;'></span></h3> <div>  <label for='file'>File </label></br>" +
+        "<input type='file' class='form-control file'><label for='value'>Value </label></br> <input type='text' class='form-control value'></div></div>");
+      $(this).parent().siblings('.imageChoicesAccordion').accordion('refresh');
+    });
+
+    $(document).on("click", ".addTextChoice", function () {
+      var textChoiceCount = $(this).parent().siblings('.textChoiceAccordion').children('h3').last().attr("value");
+      if (textChoiceCount == undefined) {
+        textChoiceCount = 1;
+      } else { textChoiceCount++; }
+      $(this).parent().siblings('.textChoiceAccordion').append("<h3 value='" + textChoiceCount + "'class='textChoiceCount'>Text Choice " + textChoiceCount + "<span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%;  position: absolute;  top: 25%; '></span></h3>  <div>  <label for='file'>Text</label></br> " +
+        "<input type='text' class='form-control file' <label for='value'>Value </label></br>" +
+        "<input type='text' class='form-control value'> </div></div>");
+      $(this).parent().siblings('.textChoiceAccordion').accordion('refresh');
+    });
+    $(document).on("click", "#addConsent", function () {
+      var consentCount = $(this).parent().siblings('.consentAccordion').children('h3').last().text().split(" ").pop();
+      if (consentCount == undefined) {
+        consentCount = 1;
+      }
+      else {
+        consentCount++;
+      }
+      $(this).parent().siblings('.consentAccordion').append("<h3> Informed Consent " + consentCount + "<span class='glyphicon glyphicon-trash' style='" +
+        "right: 1%;" +
+        "position: absolute;" +
+        "top: 25%;" +
+        "'></span></h3>" +
+        "<div>" +
+        "<label for='confidential'>Consent Type</label></br>" +
+        "<select class='form-control' id='consentType" + consentCount + "'>" +
+        "<option value='overview' selected>Overview</option>" +
+        "<option value='dataGathering'>Data Gathering</option>" +
+        "<option value='privacy'>Privacy</option>" +
+        "<option value='dataUse'>Data Use</option>" +
+        "<option value='timeCommitment'>Time Commitment</option>" +
+        "<option value='studySurvey'>Study Survey</option>" +
+        "<option value='studyTasks'>Study Tasks</option>" +
+        "<option value='withdrawing'>Withdrawing</option>" +
+        "</select>" +
+        "<label for='valueConsent'>Value </label>" +
+        "<input type='text' class='form-control' id='valueConsent" + consentCount + "'>" +
+        "</div>");
+      $(this).parent().siblings('.consentAccordion').accordion('refresh');
+      $(this).parent().siblings('.consentAccordion').children('h3').last().click();
+
+    });
+    $(document).on('change', '#enableInformedConsent', function () {
+      var value = $(this).val();
+      if (value == 'false') {
+        $("#addConsent").siblings('.deleteData').trigger('click');
+        $("#addConsent").attr('disabled', true);
+      } else {
+        $("#addConsent").attr('disabled', false);
+      }
+    });
+    $(document).on('change', '.stepItemImage,.dfIFile,.dfTVideo,.dfTImage,.dfImage', function () {
+      var element = $(this);
+      if (this.files && this.files[0]) {
+
+        var FR = new FileReader();
+
+        FR.addEventListener("load", function (e) {
+          // element.closest("img").attr('src',e.target.result);
+          element.next("p").append(e.target.result);
+        });
+
+        FR.readAsDataURL(this.files[0]);
+      }
+    });
+  </script>

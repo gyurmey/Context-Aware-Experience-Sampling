@@ -1,0 +1,62 @@
+{
+    "properties": {
+        "identifier": {
+            "type": "string",
+            "description": "Identify your timeLoop",
+            "default": "Loop1"
+        },
+        "loop": {
+            "properties": {
+            "type": {
+            "type": "string",
+            "template": "time"},
+            "intervalMinutes": {
+            "type": "number"},
+            "intervalSeconds": {
+            "type": "number"}}
+        },
+        "constraints": {
+            "type": "array",
+            "format": "tabs",
+            "items": {
+                "title": "constraints",
+                "headerTemplate": "{{i}} - {{self.type}}",
+                "oneOf": [
+                    {"title": "timeconstraint(date)",
+                    "$ref": "timeconstraintone.json"},
+                    
+                    {"title": "timeconstraint(hour)",
+                    "$ref": "timeconstrainttwo.json"},
+                    
+                    {"title": "timeconstraint(inverted)",
+                    "$ref": "timeconstraintthree.json"},
+                    
+                    {"title": "timeconstraint(duration1)",
+                    "$ref": "timeconstraintfour.json"},
+                    
+                    {"title": "timeconstraint(duration2)",
+                    "$ref": "timeconstraintfive.json"},
+                    
+                    {"title": "timeconstraint(interval)",
+                    "$ref": "timeconstraintsix.json"},
+                    
+                    {"title": "timeconstraint(user)",
+                    "$ref": "timeconstraintseven.json"},
+                    
+                    {"title": "locationconstraint",
+                    "$ref": "locationconstraintone.json"},
+                    
+                    {"title": "locationconstraint(inverted)",
+                    "$ref": "locationconstrainttwo.json"},
+                    
+                    {"title": "validconstraint",
+                    "$ref": "validconstraint.json"},
+                    
+                    {"title": "randomisedconstraint",
+                    "$ref": "randomisedconstraint.json"},
+                    
+                    {"title": "countconstraint",
+                    "$ref": "countconstraint.json"}
+                ]}}
+                    }
+                }

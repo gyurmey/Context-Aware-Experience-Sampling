@@ -1,0 +1,35 @@
+.section_editor {
+    font-size: 12px;
+}
+
+
+
+#editor_holder h3 {
+    margin-top: 10px;
+        margin-left: 10px;
+
+    
+}
+
+
+
+#editor_holder .tabs {
+    margin-left: 20px;
+}
+
+
+
+#editor_holder div.p-4 {
+        padding-bottom: 5px !important;
+
+    margin: 0px !important; 
+
+}
+
+.card {
+
+   -webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+
+}

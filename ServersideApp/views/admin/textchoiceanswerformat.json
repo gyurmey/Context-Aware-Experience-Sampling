@@ -1,0 +1,60 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "TextChoiceQuestionStep1"},
+
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["TextChoiceAnswerFormat"]
+
+
+     },
+    "style": {
+      "type": "string",
+      "enum":[
+        "singleChoice",
+        "multipleChoice"
+    ],
+      "description":"The style of the question (that is, single or multiple choice)."
+    },
+    "textChoices": {
+        "type": "array",
+        "description":"An array of ORKTextChoice objects that represent the choices that are displayed to participants.",
+        "items": {
+             "anyOf": [
+            {"type": "object", "title": "textchoice", "properties":{"text":{"type": "string"}, "value":{"type": "string"}}}
+          ]
+        }
+    },
+    "feedbackChartType": {
+        "type": "string",
+        "enum": ["None", "Bar", "Pie"],
+        "description": "The kind of chart which will be send as feedback to the user"
+    }
+  }
+}

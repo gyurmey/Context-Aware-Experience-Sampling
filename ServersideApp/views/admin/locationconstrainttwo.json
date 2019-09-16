@@ -1,0 +1,20 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["location"]
+        },
+        "inverted": {
+            "type": "boolean"
+        },
+        
+        "name": {
+            "type": "string"
+        },
+        
+        "promptOnEntering": {
+            "type": "boolean"
+        }
+    }
+
+}

@@ -1,0 +1,49 @@
+{
+    "$ref": "answerformat.json",
+    "properties": {
+      "identifier": {
+        "id": "identifier",
+        "type": "string",
+        "default": "TimeIntervalQuestionStep1"},
+        
+      "type": {
+        "type": "string",
+        "enum": ["QuestionStep"]
+  },
+  
+     "title": {
+         "type": "string",
+         "format": "text",
+         "description": "The question you want to ask",
+         "minLength": 4,
+         "default": "Type in your question..."
+     },  
+     "text": {
+         "type": "string",
+         "format": "text",
+         "description": "Short description for your question."
+     },
+     "optional": {
+     "type": "boolean"
+     },
+  
+     "answerFormat":  {
+         "title": "answerFormat",
+         "type": "string",
+         "enum": ["TimeIntervalAnswerFormat"]
+          
+       
+       },
+    "defaultInterval": {
+        "type": "number",
+        "description": "The initial time interval displayed in the picker."
+      },
+
+    "step": {
+      "type": "number",
+      "default":"1",
+      "description": "The size of the allowed step in the interval, in minutes."
+    }
+  }
+}
+  

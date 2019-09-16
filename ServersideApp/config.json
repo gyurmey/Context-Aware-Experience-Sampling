@@ -1,0 +1,14 @@
+{
+    "local_db":{
+        "host": "mongodb://localhost",
+        "port":"27017",
+        "dbname": "caes",
+        "connectionString":"mongodb://localhost:27017/caes"
+    },
+    "mongo_atlas":{
+        "connectionString": "mongodb+srv://jtvan:thang861451@cluster-nodetryout-u8yid.mongodb.net/nodetryout?retryWrites=true"
+    },
+    "mongo_atlas_tester":{
+        "connectionString": "mongodb+srv://mokshed1:mokshed123@cluster-tester-5rwwl.mongodb.net/test?retryWrites=true&w=majority"
+    }
+}

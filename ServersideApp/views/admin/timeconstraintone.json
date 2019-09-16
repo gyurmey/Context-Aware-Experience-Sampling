@@ -1,0 +1,23 @@
+{   "$ref": "constraint.json",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["time"]
+        },
+        
+        "from": {
+            "type": "string",
+            "format": "date"
+        },
+        "to": {
+            "type": "string",
+            "format": "date"
+        },
+        "onDayType": {
+            "type": "string",
+            "enum": ["weekdays", "allDays", "weekends"]
+
+        }
+    }
+
+}

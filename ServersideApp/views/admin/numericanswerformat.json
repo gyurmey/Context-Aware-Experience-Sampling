@@ -1,0 +1,64 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+        "id": "identifier",
+        "type": "string",
+        "default": "NumericQuestionStep1"},
+
+      "type": {
+        "type": "string",
+        "enum": ["QuestionStep"]
+  },
+
+     "title": {
+         "type": "string",
+         "format": "text",
+         "description": "The question you want to ask",
+         "minLength": 4,
+         "default": "Type in your question..."
+     },
+     "text": {
+         "type": "string",
+         "format": "text",
+         "description": "Short description for your question."
+     },
+     "optional": {
+     "type": "boolean"
+     },
+
+     "answerFormat":  {
+         "title": "answerFormat",
+         "type": "string",
+         "enum": ["NumericAnswerFormat"]
+
+
+       },
+    "style": {
+        "type": "string",
+        "description": "The style of numeric entry (decimal or integer)"
+    },
+    "unit": {
+        "type": "string",
+        "format": "text",
+        "description": " A string that displays a localized version of the unit designation next to the numeric value."
+    },
+    "minimum": {
+        "type": "number",
+        "description": "The minimum allowed value for the numeric answer"
+    },
+    "maximum": {
+        "type": "number",
+        "description":"The maximum allowed value for the numeric answer"
+    },
+    "scale": {
+        "type": "number",
+        "description": "The decimal scale (number of digits to the right of the decimal point) allowed value for the numeric answer."
+    },
+    "feedbackChartType": {
+        "type": "string",
+        "enum": ["None", "Bar", "Line"],
+        "description": "The kind of chart which will be send as feedback to the user"
+    }
+  }
+}

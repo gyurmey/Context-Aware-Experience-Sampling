@@ -1,0 +1,65 @@
+{
+  "$ref": "answerformat.json",
+  "properties": {
+    "identifier": {
+      "id": "identifier",
+      "type": "string",
+      "default": "DateQuestionStep1"},
+      
+    "type": {
+      "type": "string",
+      "enum": ["QuestionStep"]
+},
+
+   "title": {
+       "type": "string",
+       "format": "text",
+       "description": "The question you want to ask",
+       "minLength": 4,
+       "default": "Type in your question..."
+   },  
+   "text": {
+       "type": "string",
+       "format": "text",
+       "description": "Short description for your question."
+   },
+   "optional": {
+   "type": "boolean"
+   },
+
+   "answerFormat":  {
+       "title": "answerFormat",
+       "type": "string",
+       "enum": ["DateAnswerFormat"]
+     },
+
+    "style": {
+      "type": "string",
+      "template": "undefined",
+      "description":"The style of date entry"
+    },
+    "defaultdate": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[1-9]+[0-9]+[0-9]+[0-9]+-+[0-9]+[0-9]+-[0-9]+[0-9]",
+      "description":"The date to use as the default"
+    },
+  "minimumdate": {
+    "type": "string",
+    "format": "date",
+    "pattern": "^[1-9]+[0-9]+[0-9]+[0-9]+-+[0-9]+[0-9]+-[0-9]+[0-9]",
+    "description":"The minimum allowed date."
+  }, 
+  "maximumdate": {
+    "type": "string",
+    "format": "date",
+    "pattern": "^[1-9]+[0-9]+[0-9]+[0-9]+-+[0-9]+[0-9]+-[0-9]+[0-9]",
+    "description":"The maximum allowed dateThe maximum allowed date."
+  }, 
+  "calendar": {
+    "type": "string",
+    "template": "undefined",
+    "description":"The calendar to use in the picker"
+  }
+}
+}

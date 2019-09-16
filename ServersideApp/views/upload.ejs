@@ -1,0 +1,30 @@
+<% include admin/parts/format.ejs %> 
+<body>
+
+    <% include admin/parts/link.ejs %>
+
+   <div class="container">
+     <h2>Uploading study JSON file</h2>
+    <%if(msg){%>
+      <%if(msg.isSuccess){%>
+        <div class="alert alert-success" role="alert" id="alert_success" >
+          <%=msg.content%>
+        </div>
+        <%}%>
+
+        <%if(!msg.isSuccess){%>
+    <div class="alert alert-danger" role="alert" id="alert_error" >
+      <%=msg.content%>
+    </div>
+<%}%>
+<%}%>
+    <form style="margin-top:15px;" action="/admin/study/upload-study" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <input class="input-lg" type="file" name="study" />
+        <input style="margin-top: 10px; margin-left:20px;" type="submit" name="Upload" class="btn btn-success btn-lg"/>
+      </div>
+        
+      </form>
+      
+   </div>
+</body>

@@ -1,0 +1,36 @@
+{  "$ref": "step.json",
+    "properties": {
+        "identifier":{
+            "type": "string",
+            "description": "A short string that uniquely identifies the imagecapturestep.",
+            "default": "ImageCaptureStep1"  
+        },
+
+        "type": {
+            "type": "string",
+            "enum":["ImageCaptureStep"]}
+            ,
+        "title": {
+            "type": "string",
+            "description": "The title of your step"},
+
+        "text":{
+            "type": "string"
+        },
+
+        "optional":{
+            "type": "boolean"
+        },
+
+        "templateImage": {
+                "type": "string",
+                "template": "undefined"
+                
+        
+    }
+    
+}
+
+}
+
+    

@@ -1,0 +1,12 @@
+{   "$ref": "instructionstep.json",
+    "title": "Completion Step",
+    "type": "object",
+    "id": "completionstep",
+    "properties": {
+        "identifier":{},
+        "type": {
+            "type": "string",
+            "enum": ["CompletionStep"]
+        }
+    }  
+    }

@@ -1,0 +1,24 @@
+{   "$ref": "step.json",
+    "properties": {
+        "identifier":{},
+        "type": {
+        "type": "string",
+        "enum": ["VideoCaptureStep"]},
+        "title":{},
+        "text":{},
+        "optional":{},
+        "templateVideo": {
+            "type": "string",
+            "format": "file",
+            "title": "Image",
+        
+            "media": {
+            "binaryEncoding": "base64",
+            "type": "image/png"
+        }
+              
+        }
+    }
+}
+
+    

@@ -1,0 +1,75 @@
+
+<% include admin/parts/format.ejs %> 
+<body>
+  <% include admin/parts/link.ejs %>
+   <br>
+    <br>
+     <br>
+     <script type="text/javascript">
+      var studyId = "<%=studyId%>" ;
+          var taskName = "<%=taskName%>";
+     </script>
+
+  <div class="container">
+      <div class="row">
+          <span class="col-lg-offset-1"></span>
+          <h4><a href="/admin/result/<%= studyId%>" >Tasks</a></h4>
+          <h4> / Step Items</h4>
+        <br>
+    </div>
+  <div class="table-responsive">
+  <table class="table table-bordered table-striped" id="data">
+
+  </table>
+</div>
+</div>
+
+<div id="show"></div>
+
+  <script>
+      console.log("study Id :"+studyId);
+      console.log("taskName :"+taskName);
+      var content = document.getElementById("data");
+      var ourRequest = new XMLHttpRequest();
+      ourRequest.open('GET', '/admin/result/getOneTask/'+studyId+"/"+taskName);
+      ourRequest.onload = function() {
+        if (ourRequest.status >= 200 && ourRequest.status < 400) {
+          console.log(ourRequest.responseURL);
+          var ourData = JSON.parse(ourRequest.responseText);
+          console.log(JSON.stringify(ourRequest.responseText));          
+          renderHTML(ourData);
+        } else {
+          console.log("error");
+        }
+      };
+      ourRequest.onerror = function() {
+        console.log("Connection error");
+      };
+      ourRequest.send();
+    
+    function renderHTML(data) {
+      var htmlString = "";
+
+      for (i = 0; i < data.length; i++) {
+          
+          for(j=0; j < data[i].stepResults.length; j++){
+       
+          htmlString += "<tr>" + "<th>" + "UserId" + "</th>" + "<th>" + "Time - Survey Started  " + "</th>" + "<th>" + "Time - Survey Ended  " + "</th>" + "<th>" + "Image" + "</th>" + "<th>" + "Video" + "</th>" +  "<th>" + "Audio" + "</th>" +  "</tr>" + "<tr>" + "<td>" + `<span  style=color:blue>  ${data[i].userId}  </span>` + "</td>" + "<td>" + data[i].startDate + "</td>" + "<td>" + data[i].endDate + "</td>" 
+          for(k=0; k < data[i].stepResults[j].stepItemResults.length; k++){
+          if(data[i].stepResults[j].stepItemResults[k].type==='ImageResult'){
+         htmlString +=   "<td>" + `"<img style="width:150px;height:140px;" src="data:image/png;base64,${data[i].stepResults[j].stepItemResults[k].image}">"` + "</img>"  + "</td>" 
+          }else if(data[i].stepResults[j].stepItemResults[k].type==='VideoResult'){
+
+            htmlString +=  "<td>" + `<video style="width:150px;height:200px;" controls> <source type="video/webm" src="${data[i].stepResults[j].stepItemResults[k].video}"> <source type="video/mp4" src="${data[i].stepResults[j].stepItemResults[k].video}"> </video>` + "</td>" 
+
+          }else if(data[i].stepResults[j].stepItemResults[k].type==='AudioResult'){
+          htmlString += "<td>" + `"<audio style="width:150px;height:30px;" controls src="data:audio/ogg;base64, ${data[i].stepResults[j].stepItemResults[k].audio}">"` + "</td>" + "</tr>" ;
+               }
+             }
+             }
+        }
+        htmlString += '</p>';
+      content.insertAdjacentHTML('beforeend', htmlString);
+    }
+    
+    </script>

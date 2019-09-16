@@ -1,0 +1,62 @@
+
+
+<% include admin/parts/format.ejs %> 
+<body>
+  <% include admin/parts/link.ejs %>
+   <br>
+    <br>
+     <br>
+  <div class="container">
+    <div class="row ">
+      <span class="col-lg-offset-1"></span>
+      <h4 style="color:black"><a href="/AllStatistic">  Tasks </a></h4>
+      <h4> / Steps</h4>      
+      <br>
+    </div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="data">
+
+    </table>
+  </div>
+  </div>
+
+  <div id="show"></div>
+ 
+
+  <script>
+    var objId = "<%=_id%>";
+    var content = document.getElementById("data");
+   
+      var ourRequest = new XMLHttpRequest();
+      ourRequest.open('GET', '/admin/result/AllStepsResults/getOneStep/'+objId   );
+      ourRequest.onload = function() {
+        if (ourRequest.status >= 200 && ourRequest.status < 400) {
+          var ourData = JSON.parse(ourRequest.responseText);
+          renderHTML(ourData);
+        } else {
+          console.log("error");
+        }
+        
+      };
+    
+      ourRequest.onerror = function() {
+        console.log("Connection error");
+      };
+      ourRequest.send();
+    
+    function renderHTML(data) {
+      var htmlString = "";
+     
+       for (i = 0; i < data[0].stepResults.length; i++) {
+       
+       htmlString += "<tr>" + "<th>" + "stepName " + "</th>" + "<th>" + "Step Id " + "</th>" + "</tr>" + "<tr>" + "<td>" + data[0].stepResults[i].stepName + "</td>" + "<td>" + data[0].stepResults[i].stepId + "</td>" + "<td>" +` "<a href='/admin/result/AllStepsResults/AllStepsItemResults/${objId}' class='btn btn-primary btn-lg'>"` + "stepItemResults"  + "</a>" +"</td>" + "</tr>" ;
+    
+        htmlString += '</p>';
+    
+     }
+    
+      content.insertAdjacentHTML('beforeend', htmlString);
+    }
+
+    
+    </script>

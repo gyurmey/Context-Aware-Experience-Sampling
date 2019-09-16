@@ -1,0 +1,93 @@
+{
+    "$ref": "answerformat.json",
+    "properties": {
+      "identifier": {
+        "id": "identifier",
+        "type": "string",
+        "default": "ScaleQuestionStep1"},
+
+      "type": {
+        "type": "string",
+        "enum": ["QuestionStep"]
+  },
+
+     "title": {
+         "type": "string",
+         "format": "text",
+         "description": "The question you want to ask",
+         "minLength": 4,
+         "default": "Type in your question..."
+     },
+     "text": {
+         "type": "string",
+         "format": "text",
+         "description": "Short description for your question."
+     },
+     "optional": {
+     "type": "boolean"
+     },
+
+     "answerFormat":  {
+         "title": "answerFormat",
+         "type": "string",
+         "enum": ["ScaleAnswerFormat"]
+       },
+
+    "maximum": {
+        "type": "number",
+        "description": "the upper bound of the scale."
+      },
+    "minimum": {
+      "type": "number",
+      "description": "the lower bound of the scale:"
+    },
+    "step": {
+      "type": "number",
+      "description":" The size of each discrete offset on the scale."
+    },
+    "defaultValue": {
+      "type": "number",
+      "description":"The default value for the slider."
+    },
+    "vertical": {
+        "type": "boolean",
+        "description":"A Boolean value indicating whether the scale is oriented vertically."
+      },
+    "numberFormatter": {
+        "type": "string",
+        "template": "undefined",
+        "description":"Number formatter applied to the minimum, maximum, and slider values. Can be overridden by subclasses."
+      },
+    "maximumValueDescription": {
+      "type": "string",
+      "description":"A localized label to describe the maximum value of the scale."
+    },
+    "minimumValueDescription": {
+      "type": "string",
+      "description":"A localized label to describe the minimum value of the scale."
+    },
+    "maximumImage": {
+      "type": "string",
+       "template": "undefined",
+       "description":"An image for the upper bound of the slider. The recommended image size is 30 x 30 points. The maximum range label will not be visible."
+    },
+    "minimumImage": {
+        "type": "string",
+        "template": "undefined",
+        "description":"An image for the lower bound of the slider. The recommended image size is 30 x 30 points. The minimum range label will not be visible."
+      },
+    "gradientColors": {
+        "type": "array",
+        "description":"The colors to use when drawing a color gradient above the slider. Colors are drawn such that lower indexes correspond to the minimum side of the scale, while colors at higher indexes in the array corresond to the maximum side of the scale."
+      },
+    "gradientLocation": {
+      "type": "array",
+      "description":"Indicates the position of gradient stops for the colors specified in gradientColors. Gradient stops are specified as values between 0 and 1. The values must be monotonically increasing."
+    },
+    "feedbackChartType": {
+        "type": "string",
+        "enum": ["None", "Bar", "Line"],
+        "description": "The kind of chart which will be send as feedback to the user"
+    }
+  }
+}
